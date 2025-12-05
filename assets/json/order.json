@@ -1,0 +1,54 @@
+[
+  {
+    "tax": 2.5,
+    "status": "pending",
+    "discount": 120.56,
+    "subtotal": 5690.78,
+    "deliveryFee": 240.9,
+    "acceptedAt": null,
+    "dispatchedAt": null,
+    "completedAt": null,
+    "cancelledAt": null,
+    "transactionId": null,
+    "deliveryMode": "delivery",
+    "estimatedDeliveryTime": null,
+    "riderId": "4uWuFJEXWpFBaHBZrxaF",
+    "createdAt": "2025-11-21T12:34:00Z",
+    "orderNotes": "Extra napkins please.",
+    "resturantId": "Nc0pkANcqvOZjrJoKwZgTBCOuoG3",
+    "customerId": "c7UYLRveQSScpUzByQ7MIlMIhLb2",
+    "orderId": "6545454",
+    "orderDeliveryAddress": {
+      "latitude": 98.88,
+      "longitude": 25.66,
+      "street": "johnson badmus street",
+      "city": "lekki phase 1",
+      "state": "Lagos",
+      "zipCode": "5869831",
+      "apartmentNumber": "28",
+      "deliveryInstructions": null
+    },
+    "items": [
+      {
+        "quantity": 4,
+        "priceAtOrder": 45.65,
+        "mealId": "5rQx9NL8O41QziuKAYGP"
+      },
+      {
+        "quantity": 1,
+        "priceAtOrder": 125.05,
+        "mealId": "Lp7q6sfodk9ZsgkQpv8C"
+      },
+      {
+        "quantity": 10,
+        "priceAtOrder": 89.99,
+        "mealId": "UhQv7T87wY4ICYIqIjX8"
+      },
+      {
+        "quantity": 10,
+        "priceAtOrder": 89.99,
+        "mealId": "MNPrffU5xj2wEMfUG5E1"
+      }
+    ]
+  }
+]

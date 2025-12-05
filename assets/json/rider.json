@@ -1,0 +1,17 @@
+[
+  {
+    "name": "Samuel Ade",
+    "phone": "+2348011111000",
+    "avatar": "https://randomuser.me/api/portraits/men/65.jpg"
+  },
+  {
+    "name": "Blessing Ibe",
+    "phone": "+2348022222000",
+    "avatar": "https://randomuser.me/api/portraits/women/44.jpg"
+  },
+  {
+    "name": "Emeka Okafor",
+    "phone": "+2348033333000",
+    "avatar": "https://images.unsplash.com/photo-1511367461989-f85a21fda167?fit=crop&w=400&q=80"
+  }
+]

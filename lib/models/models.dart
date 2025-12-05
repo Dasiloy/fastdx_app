@@ -1,0 +1,11 @@
+export "package:fastdx_app/models/user_model.dart";
+export 'package:fastdx_app/models/state_model.dart';
+export "package:fastdx_app/models/onboard_model.dart";
+export "package:fastdx_app/models/social_model.dart";
+export "package:fastdx_app/models/resturant_model.dart";
+export "package:fastdx_app/models/meal_model.dart";
+export "package:fastdx_app/models/delivery_address_model.dart";
+export "package:fastdx_app/models/order_item_model.dart";
+export "package:fastdx_app/models/order_model.dart";
+export "package:fastdx_app/models/rider_model.dart";
+export 'package:fastdx_app/models/transaction_model.dart';
