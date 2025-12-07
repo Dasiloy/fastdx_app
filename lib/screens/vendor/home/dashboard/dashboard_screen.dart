@@ -24,46 +24,30 @@ class _VendorDashboardScreenState extends Controller {
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,
       padding: EdgeInsetsGeometry.only(left: 20, right: 20, bottom: 24),
-      child: FutureBuilder(
-        future: data,
-        initialData: {"meals": [], "orders": [], "reviews": []},
-        builder: (ctx, snapshot) {
-          final isLoading = snapshot.connectionState == ConnectionState.waiting;
+      child: Column(
+        children: [
+          FutureBuilder(
+            future: _data,
+            initialData: {"orders": []},
+            builder: (ctx, snapshot) {
+              final isLoading =
+                  snapshot.connectionState == ConnectionState.waiting;
 
-          final meals = snapshot.data!["meals"]!.cast<AppMeal>();
-          final orders = snapshot.data!["orders"]!.cast<AppOrder>();
+              final orders = snapshot.data!["orders"]!.cast<AppOrder>();
 
-          final orderRequests = AppOrder.getOrderRequests(orders);
-          final runningOrders = AppOrder.getRuningOrders(orders);
+              final orderRequests = AppOrder.getOrderRequests(orders);
+              final runningOrders = AppOrder.getRuningOrders(orders);
 
-          return Column(
-            children: [
-              Row(
+              return Row(
                 children: [
                   Expanded(
                     child: VendorStatCard(
                       label: 'RUNNING ORDERS',
                       value: runningOrders.length,
-                      onPress: isLoading
-                          ? null
-                          : () {
-                              Sheet.openListSheet(
-                                context: context,
-                                list: runningOrders,
-                                tapBehaviour: TapBehavior.none,
-                                separator: Separator(
-                                  margin: EdgeInsets.symmetric(vertical: 15),
-                                ),
-                                header: Text(
-                                  '${runningOrders.length} Running Order(s)',
-                                  style: Theme.of(context).textTheme.titleLarge!
-                                      .copyWith(fontWeight: FontWeight.w400),
-                                ),
-                                itemBuilder: (_, _, order) {
-                                  return VendorOrder(order: order);
-                                },
-                              );
-                            },
+                      onPress: _openRunningOrders(
+                        runningOrders,
+                        loading: isLoading,
+                      ),
                     ),
                   ),
                   const SizedBox(width: 13),
@@ -71,39 +55,23 @@ class _VendorDashboardScreenState extends Controller {
                     child: VendorStatCard(
                       label: 'ORDER REQUESTS',
                       value: orderRequests.length,
-                      onPress: isLoading
-                          ? null
-                          : () {
-                              Sheet.openListSheet(
-                                context: context,
-                                list: orderRequests,
-                                tapBehaviour: TapBehavior.none,
-                                separator: Separator(
-                                  margin: EdgeInsets.symmetric(vertical: 20),
-                                ),
-                                header: Text(
-                                  '${orderRequests.length} Order Request(s)',
-                                  style: Theme.of(context).textTheme.titleLarge!
-                                      .copyWith(fontWeight: FontWeight.w400),
-                                ),
-                                itemBuilder: (_, _, order) {
-                                  return VendorOrder(order: order);
-                                },
-                              );
-                            },
+                      onPress: _openOrderRequests(
+                        orderRequests,
+                        loading: isLoading,
+                      ),
                     ),
                   ),
                 ],
-              ),
-              const SizedBox(height: 17),
-              AppCard(child: SizedBox(height: 205, width: double.infinity)),
-              const SizedBox(height: 17),
-              VendorReviews(),
-              const SizedBox(height: 17),
-              PopularItems(meals: meals, isLoading: isLoading),
-            ],
-          );
-        },
+              );
+            },
+          ),
+          const SizedBox(height: 17),
+          VendorChart(),
+          const SizedBox(height: 17),
+          VendorReviews(),
+          const SizedBox(height: 17),
+          PopularItems(),
+        ],
       ),
     );
   }

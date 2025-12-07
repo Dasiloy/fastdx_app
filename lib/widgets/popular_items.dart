@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 import 'package:fastdx_app/core/core.dart';
@@ -6,12 +7,34 @@ import 'package:fastdx_app/theme/theme.dart';
 import 'package:fastdx_app/models/models.dart';
 import 'package:fastdx_app/widgets/widgets.dart';
 import 'package:fastdx_app/screens/screens.dart';
+import 'package:fastdx_app/providers/providers.dart';
+import 'package:fastdx_app/services/services.dart';
 
-class PopularItems extends StatelessWidget {
-  final List<AppMeal> meals;
-  final bool isLoading;
+class PopularItems extends ConsumerStatefulWidget {
+  const PopularItems({super.key});
 
-  const PopularItems({super.key, required this.meals, this.isLoading = false});
+  @override
+  ConsumerState<PopularItems> createState() => _PopularItemsState();
+}
+
+class _PopularItemsState extends ConsumerState<PopularItems> {
+  late Future<List<AppMeal>> _meals;
+
+  @override
+  void initState() {
+    super.initState();
+    _meals = _getMeals();
+  }
+
+  Future<List<AppMeal>> _getMeals() async {
+    final resturantId = ref.read(appProvider).resturant!.id;
+    try {
+      final result = await MealApi.list(plain: true, resturantId: resturantId);
+      return result;
+    } catch (e) {
+      return [];
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,26 +49,34 @@ class PopularItems extends StatelessWidget {
           spacing: 14,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AppCardHeader(label: "Popular Meals This Week"),
+            AppCardHeader.text(label: "Popular Meals This Week"),
             Expanded(
-              child: HorizontalList(
-                data: meals,
-                borderRadius: 16,
-                emptyLabel: "No meals yet",
-                isLoading: isLoading,
-                separator: SizedBox(width: 12),
-                tapBehavior: TapBehavior.inkWell,
-                onTap: (ctx, meal) {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) {
-                        return MealScreen(meal: meal);
-                      },
-                    ),
+              child: FutureBuilder(
+                future: _meals,
+                initialData: [],
+                builder: (context, asyncSnapshot) {
+                  return HorizontalList(
+                    data: asyncSnapshot.data!.cast<AppMeal>(),
+                    borderRadius: 16,
+                    emptyLabel: "No meals yet",
+                    isLoading:
+                        asyncSnapshot.connectionState ==
+                        ConnectionState.waiting,
+                    separator: SizedBox(width: 12),
+                    tapBehavior: TapBehavior.inkWell,
+                    onTap: (ctx, meal) {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) {
+                            return MealScreen(meal: meal);
+                          },
+                        ),
+                      );
+                    },
+                    itemBuilder: (_, index, meal) {
+                      return _PopularItem(meal: meal);
+                    },
                   );
-                },
-                itemBuilder: (_, index, meal) {
-                  return _PopularItem(meal: meal);
                 },
               ),
             ),

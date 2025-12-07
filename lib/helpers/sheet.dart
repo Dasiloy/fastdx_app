@@ -8,7 +8,7 @@ class Sheet {
     return Center(
       child: Container(
         width: 60,
-        height: 6,
+        height: 4,
         margin: const EdgeInsets.only(top: 16, bottom: 6),
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
@@ -22,20 +22,21 @@ class Sheet {
     required BuildContext context,
     required List<T> list,
     required Widget Function(BuildContext ctx, int index, T item) itemBuilder,
-    TapBehavior tapBehaviour = TapBehavior.gestureDetector,
-    bool expandSheet = false,
-    bool enableDrag = true,
-    bool useSafeArea = false,
-    bool showDragHandle = true,
-    double initialChildSize = 0.4,
-    double minChildSize = 0.2,
-    double maxChildSize = 0.9,
-    double pt = 12,
-    double pb = 16,
-    double pl = 20,
-    double pr = 20,
-    Widget? header,
+    final TapBehavior tapBehaviour = TapBehavior.gestureDetector,
+    final bool expandSheet = false,
+    final bool enableDrag = true,
+    final bool useSafeArea = false,
+    final bool showDragHandle = true,
+    final double initialChildSize = 0.4,
+    final double minChildSize = 0.2,
+    final double maxChildSize = 0.9,
+    final double pt = 12,
+    final double pb = 16,
+    final double pl = 20,
+    final double pr = 20,
+    final Widget? header,
     final Widget? separator,
+    final Key? key,
   }) {
     showModalBottomSheet(
       showDragHandle: false,
@@ -46,6 +47,7 @@ class Sheet {
       backgroundColor: Theme.of(context).colorScheme.surfaceContainerLowest,
       builder: (ctx) {
         return DraggableScrollableSheet(
+          key: key,
           expand: expandSheet,
           initialChildSize: initialChildSize,
           minChildSize: minChildSize,
@@ -70,6 +72,46 @@ class Sheet {
                     controller: scrollController,
                   ),
                 ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  static void openDraggableSheet({
+    required Widget Function(BuildContext context, ScrollController controller)
+    builder,
+    required BuildContext context,
+    final bool expandSheet = false,
+    final bool enableDrag = true,
+    final bool useSafeArea = false,
+    final bool showDragHandle = true,
+    final double initialChildSize = 0.4,
+    final double minChildSize = 0.2,
+    final double maxChildSize = 0.9,
+    final Key? key,
+  }) {
+    showModalBottomSheet(
+      showDragHandle: false,
+      isScrollControlled: true,
+      context: context,
+      useSafeArea: useSafeArea,
+      enableDrag: enableDrag,
+      backgroundColor: Theme.of(context).colorScheme.surfaceContainerLowest,
+      builder: (ctx) {
+        return DraggableScrollableSheet(
+          key: key,
+          expand: expandSheet,
+          minChildSize: minChildSize,
+          maxChildSize: maxChildSize,
+          initialChildSize: initialChildSize,
+          builder: (cont, scrollController) {
+            return Column(
+              children: [
+                if (showDragHandle) _buildDragHandle(cont),
+                Expanded(child: builder(ctx, scrollController)),
               ],
             );
           },

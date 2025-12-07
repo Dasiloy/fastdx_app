@@ -82,7 +82,7 @@ class AppTextTheme {
         fontSize: 14,
         fontWeight: FontWeight.w600,
         height: 1.3,
-        color: cs.onSurface.withValues(alpha: 0.5),
+        color: cs.onSurface,
       ),
 
       // Body text
@@ -90,13 +90,13 @@ class AppTextTheme {
         fontSize: 16,
         fontWeight: FontWeight.w400,
         height: 1.5,
-        color: cs.onSurface,
+        color: cs.onSurface.withAlpha(183),
       ),
       bodyMedium: base.bodyMedium?.copyWith(
         fontSize: 14,
         fontWeight: FontWeight.w400,
         height: 1.45,
-        color: cs.onSurface,
+        color: cs.onSurface.withAlpha(183),
       ),
       bodySmall: base.bodySmall?.copyWith(
         fontSize: 12,
@@ -116,7 +116,7 @@ class AppTextTheme {
         fontSize: 14,
         fontWeight: FontWeight.w600,
         height: 1.0,
-        color: cs.onSurface,
+        color: cs.onPrimary.withAlpha(183),
       ),
       labelSmall: base.labelSmall?.copyWith(
         fontSize: 13,

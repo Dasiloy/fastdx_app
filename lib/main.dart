@@ -15,8 +15,6 @@ import 'package:fastdx_app/screens/auth/login/login_screen.dart';
 
 /**
  * 
- * ACCEPT AND CANCEL ORDER
- * BUILD CHART,
  * BUILD MEAL DETAIL SCREEN
  * BUILD REVIEW LIST SCREEN,
  * BUILD MEALS LIST SCREEN

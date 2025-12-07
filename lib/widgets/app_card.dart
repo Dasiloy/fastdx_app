@@ -3,33 +3,65 @@ import 'package:flutter/material.dart';
 import 'package:fastdx_app/widgets/text_button.dart';
 
 class AppCardHeader extends StatelessWidget {
-  final String label;
+  final Widget label;
   final String? actionLabel;
-  final void Function()? onPressAction;
+  final VoidCallback? onPressAction;
 
-  const AppCardHeader({
+  const AppCardHeader._({
     super.key,
     required this.label,
     this.actionLabel,
     this.onPressAction,
   });
 
+  factory AppCardHeader.text({
+    Key? key,
+    required String label,
+    TextStyle? style,
+    String? actionLabel,
+    VoidCallback? onPressAction,
+  }) {
+    return AppCardHeader._(
+      key: key,
+      label: Builder(
+        builder: (context) {
+          final defaultStyle = Theme.of(context).textTheme.titleSmall!
+              .copyWith(fontWeight: FontWeight.w400)
+              .merge(style);
+          return Text(label, style: defaultStyle);
+        },
+      ),
+      actionLabel: actionLabel,
+      onPressAction: onPressAction,
+    );
+  }
+
+  factory AppCardHeader.widget({
+    Key? key,
+    required Widget label,
+    String? actionLabel,
+    VoidCallback? onPressAction,
+  }) {
+    return AppCardHeader._(
+      key: key,
+      label: label,
+      actionLabel: actionLabel,
+      onPressAction: onPressAction,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: Theme.of(
-            context,
-          ).textTheme.titleSmall!.copyWith(fontWeight: FontWeight.w400),
-        ),
-        Spacer(),
+        label,
+        const Spacer(),
         if (actionLabel != null)
           AppTextButton(
             enableFeedback: false,
             label: actionLabel!,
-            style: TextStyle(
+            style: const TextStyle(
               letterSpacing: 0.3,
               decoration: TextDecoration.underline,
             ),
@@ -74,7 +106,7 @@ class AppCard extends StatelessWidget {
         ).colorScheme.primary.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
         child: Padding(
-          padding: EdgeInsetsGeometry.only(
+          padding: EdgeInsets.only(
             left: pl!,
             right: pr!,
             top: pt!,

@@ -16,7 +16,10 @@ class VendorReviews extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AppCardHeader(label: "Reviews", actionLabel: "See All Reviews"),
+            AppCardHeader.text(
+              label: "Reviews",
+              actionLabel: "See All Reviews",
+            ),
             Spacer(),
             Row(
               children: [
@@ -32,10 +35,7 @@ class VendorReviews extends StatelessWidget {
                     Text(
                       "4.9",
                       style: Theme.of(context).textTheme.headlineMedium!
-                          .copyWith(
-                            fontWeight: FontWeight.w700,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
+                          .copyWith(fontWeight: FontWeight.w700),
                     ),
                   ],
                 ),
