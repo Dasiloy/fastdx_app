@@ -23,21 +23,13 @@ class DashboardAppbar extends ConsumerWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                IconButton.filled(
-                  style: IconButton.styleFrom(
-                    fixedSize: Size.fromRadius(22.5),
-                    foregroundColor: Utils.isLightMode(context)
-                        ? Theme.of(
-                            context,
-                          ).colorScheme.secondary.withValues(alpha: 0.6)
-                        : Colors.white,
-                    backgroundColor: Utils.isLightMode(context)
-                        ? Colors.white
-                        : Theme.of(context).colorScheme.secondary,
-                    elevation: 2,
-                  ),
-                  onPressed: () {},
-                  icon: Icon(Icons.menu),
+                Avatar(
+                  size: 45,
+                  onPress: () async {
+                    kFireAuth.signOut();
+                    ref.read(appProvider.notifier).clear();
+                    // we will use this to direct to the profiles page
+                  },
                 ),
                 const SizedBox(width: 16),
                 Column(
@@ -51,7 +43,7 @@ class DashboardAppbar extends ConsumerWidget {
                       ),
                     ),
                     Text(
-                      'Location', // we will come back to this soon
+                      Utils.getFormattedStringFromCamelCase(user.role.name),
                       style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                         color: Theme.of(
                           context,
@@ -64,12 +56,21 @@ class DashboardAppbar extends ConsumerWidget {
               ],
             ),
           ),
-          Avatar(
-            size: 45,
-            onPress: () async {
-              kFireAuth.signOut();
-              ref.read(appProvider.notifier).clear();
-            },
+          IconButton.filled(
+            style: IconButton.styleFrom(
+              fixedSize: Size.fromRadius(22.5),
+              foregroundColor: Utils.isLightMode(context)
+                  ? Theme.of(
+                      context,
+                    ).colorScheme.secondary.withValues(alpha: 0.6)
+                  : Colors.white,
+              backgroundColor: Utils.isLightMode(context)
+                  ? Colors.white
+                  : Theme.of(context).colorScheme.secondary,
+              elevation: 2,
+            ),
+            onPressed: () {},
+            icon: Icon(Icons.notification_important),
           ),
         ],
       ),

@@ -16,12 +16,12 @@ import 'package:fastdx_app/screens/auth/login/login_screen.dart';
 /**
  * 
  * BUILD MEAL DETAIL SCREEN
- * BUILD REVIEW LIST SCREEN,
- * BUILD MEALS LIST SCREEN
- * BUILD ADD MEAL SCREEN(),
+ * ADDMENU ACTION TO MEASSCREEN
+ * BUILD ADD MEAL SCREEN,
  * BUILD ORDER LIST SCREEN
+ * BUILD REVIEW LIST SCREEN,
  * BUILD NOTIFICATIONS SCREEN
- * BUILD PROFILE DRAWER AND ITS LINK PAGES
+ * BUILD PROFILE PAGES
  * 
  */
 Future<void> main() async {
@@ -62,10 +62,8 @@ class _MyAppState extends ConsumerState<MyApp> {
     // app initialization
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await ref.read(appProvider.notifier).load();
+      FlutterNativeSplash.remove();
     });
-
-    // Remove Splash Screen;
-    FlutterNativeSplash.remove();
   }
 
   @override

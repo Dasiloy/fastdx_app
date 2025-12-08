@@ -106,13 +106,12 @@ class DataList<T> extends StatelessWidget {
                 Theme.of(
                   context,
                 ).colorScheme.primaryContainer.withValues(alpha: 0.05),
-            child: Expanded(
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                itemCount: shimmerItemCount,
-                separatorBuilder: (_, __) => separator ?? SizedBox(width: 12),
-                itemBuilder: (_, __) => _buildShimmerItem(context),
-              ),
+            child: ListView.separated(
+              padding: padding,
+              scrollDirection: Axis.vertical,
+              itemCount: shimmerItemCount,
+              separatorBuilder: (_, __) => separator ?? SizedBox(width: 12),
+              itemBuilder: (_, __) => _buildShimmerItem(context),
             ),
           ),
         );
@@ -140,9 +139,7 @@ class DataList<T> extends StatelessWidget {
                   emptyLabel,
                   style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                     fontWeight: FontWeight.w500,
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.onSurface.withValues(alpha: 0.5),
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
               ],
@@ -182,7 +179,7 @@ class DataList<T> extends StatelessWidget {
           return _buildTappableItem(
             ctx,
             data[index],
-            itemBuilder(ctx, index, data[index - 1]),
+            itemBuilder(ctx, index, data[index]),
           );
         },
       );
@@ -207,7 +204,7 @@ class DataList<T> extends StatelessWidget {
         return _buildTappableItem(
           ctx,
           data[index],
-          itemBuilder(ctx, index, data[index - 1]),
+          itemBuilder(ctx, index, data[index]),
         );
       },
     );

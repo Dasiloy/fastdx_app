@@ -68,7 +68,7 @@ class _PopularItemsState extends ConsumerState<PopularItems> {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (_) {
-                            return MealScreen(meal: meal);
+                            return VendorMealScreen(meal: meal);
                           },
                         ),
                       );

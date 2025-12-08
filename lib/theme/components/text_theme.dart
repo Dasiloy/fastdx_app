@@ -73,7 +73,7 @@ class AppTextTheme {
         color: cs.onSurface,
       ),
       titleMedium: base.titleMedium?.copyWith(
-        fontSize: 16,
+        fontSize: 17,
         fontWeight: FontWeight.w600,
         height: 1.3,
         color: cs.onSurface,

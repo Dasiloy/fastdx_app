@@ -36,11 +36,15 @@ class MealApi {
   static Future<List<AppMeal>> list({
     bool plain = true,
     String? resturantId,
+    String? category,
   }) async {
     try {
       Query<Map<String, dynamic>> query = api;
       if (resturantId != null) {
         query = query.where("resturantId", isEqualTo: resturantId);
+      }
+      if (category != null) {
+        query = query.where("category", isEqualTo: category);
       }
       final snaps = await query.get(GetOptions(source: Source.serverAndCache));
       List<Map<String, dynamic>> meals = snaps.docs.map((doc) {

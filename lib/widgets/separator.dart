@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 enum SeparatorType { horizontal, vertical }
 
-enum SeparatorStyle { solid, dashed, dotted }
+enum SeparatorStyle { solid, dashed, dotted, none }
 
 class Separator extends StatelessWidget {
   final SeparatorType type;
@@ -37,7 +37,8 @@ class Separator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final effectiveColor =
-        color ?? Theme.of(context).colorScheme.onSurface.withOpacity(0.05);
+        color ??
+        Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.05);
 
     Widget separator;
 
@@ -50,6 +51,8 @@ class Separator extends StatelessWidget {
         break;
       case SeparatorStyle.dotted:
         separator = _buildDottedSeparator(effectiveColor);
+      case SeparatorStyle.none:
+        separator = SizedBox(height: height, width: width);
         break;
     }
 

@@ -19,3 +19,5 @@ export "package:fastdx_app/widgets/separator.dart";
 export "package:fastdx_app/widgets/vendor_order_item.dart";
 export "package:fastdx_app/widgets/order_requests.dart";
 export "package:fastdx_app/widgets/vedor_chart.dart";
+export "package:fastdx_app/widgets/vendor_meal_tab.dart";
+export "package:fastdx_app/widgets/vendor_meal_item.dart";

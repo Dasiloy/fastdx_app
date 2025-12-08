@@ -63,8 +63,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '300618524793',
     projectId: 'fastdxapp',
     storageBucket: 'fastdxapp.firebasestorage.app',
-    iosClientId: '300618524793-9d18bngvf4iqifhdts19i5c8a25dp6qb.apps.googleusercontent.com',
+    iosClientId:
+        '300618524793-9d18bngvf4iqifhdts19i5c8a25dp6qb.apps.googleusercontent.com',
     iosBundleId: 'com.example.fastdx',
   );
-
 }
