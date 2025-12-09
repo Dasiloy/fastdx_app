@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:fastdx_app/widgets/widgets.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -57,7 +58,7 @@ class VendorMealItem extends ConsumerWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  meal.buildMaterialChip(context),
+                  MealCategory(meal: meal),
                   Text(
                     meal.formattedPrice,
                     style: Theme.of(context).textTheme.bodyMedium!.copyWith(
