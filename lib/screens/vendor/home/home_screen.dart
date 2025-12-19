@@ -4,10 +4,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:fastdx_app/helpers/helpers.dart';
 import 'package:fastdx_app/theme/theme.dart';
+import 'package:fastdx_app/screens/screens.dart';
 
 // tabs
 import "package:fastdx_app/screens/vendor/home/dashboard/dashboard.dart";
-import 'package:fastdx_app/screens/vendor/home/meals/mel_screen.dart';
+import 'package:fastdx_app/screens/vendor/home/meals/meals_screen.dart';
+import 'package:fastdx_app/screens/vendor/home/orders/orders_screen.dart';
 
 part "home_controller.dart";
 
@@ -69,7 +71,15 @@ class _State extends _Controller {
 
                 // ✅ Center add button (not a tab)
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (ctx) {
+                          return VendorNewMealScreen();
+                        },
+                      ),
+                    );
+                  },
                   child: Container(
                     height: 57,
                     width: 57,
@@ -95,10 +105,7 @@ class _State extends _Controller {
                   icon: Icons.receipt_long_outlined,
                   tab: TabEnum.orders,
                 ),
-                _buildNavItem(
-                  icon: Icons.notifications_none_outlined,
-                  tab: TabEnum.notifications,
-                ),
+                _buildNavItem(icon: Icons.chat_outlined, tab: TabEnum.chats),
               ],
             ),
           ),

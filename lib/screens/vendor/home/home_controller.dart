@@ -1,9 +1,9 @@
 part of "home_screen.dart";
 
-enum TabEnum { dashboard, menu, addMenu, notifications, orders }
+enum TabEnum { dashboard, menu, addMenu, orders, chats }
 
 abstract class _Controller extends ConsumerState<VendorHomeScreen> {
-  TabEnum _tab = TabEnum.menu;
+  TabEnum _tab = TabEnum.dashboard;
 
   void _onTabChange(TabEnum tab) {
     setState(() {
@@ -34,18 +34,44 @@ abstract class _Controller extends ConsumerState<VendorHomeScreen> {
               statusBarIconBrightness: Brightness.dark,
               statusBarColor: Colors.transparent,
             ),
-            child: SafeArea(child: DashboardAppbar()),
+            child: SafeArea(
+              child: DashboardAppbar(
+                onTapNotification: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) {
+                        return Center(); // we will replace with actual screen for notificatiosn
+                      },
+                    ),
+                  );
+                },
+              ),
+            ),
           ),
         );
 
       case TabEnum.menu:
         return AppBar(
-          centerTitle: false,
+          centerTitle: true,
           backgroundColor: Utils.isLightMode(context)
               ? Theme.of(context).colorScheme.surfaceContainerLowest
               : Theme.of(context).scaffoldBackgroundColor,
           title: Text(
             "My Food List",
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w600),
+          ),
+        );
+
+      case TabEnum.orders:
+        return AppBar(
+          centerTitle: true,
+          backgroundColor: Utils.isLightMode(context)
+              ? Theme.of(context).colorScheme.surfaceContainerLowest
+              : Theme.of(context).scaffoldBackgroundColor,
+          title: Text(
+            "Order List",
             style: Theme.of(
               context,
             ).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w600),
@@ -61,7 +87,7 @@ abstract class _Controller extends ConsumerState<VendorHomeScreen> {
     VendorDashboardScreen(),
     VendorMealsScreen(),
     Center(),
-    Center(),
+    VendorOrdersScreen(),
     Center(),
   ];
 

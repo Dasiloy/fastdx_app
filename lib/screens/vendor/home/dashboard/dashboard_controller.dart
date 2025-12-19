@@ -1,6 +1,6 @@
 part of "dashboard_screen.dart";
 
-abstract class Controller extends ConsumerState<VendorDashboardScreen> {
+abstract class _Controller extends ConsumerState<VendorDashboardScreen> {
   late Future<Map<String, List<EntityInterface>>> _data;
 
   @override

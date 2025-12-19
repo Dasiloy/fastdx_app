@@ -7,7 +7,8 @@ import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:fastdx_app/providers/providers.dart";
 
 class DashboardAppbar extends ConsumerWidget {
-  const DashboardAppbar({super.key});
+  final void Function() onTapNotification;
+  const DashboardAppbar({super.key, required this.onTapNotification});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -69,7 +70,7 @@ class DashboardAppbar extends ConsumerWidget {
                   : Theme.of(context).colorScheme.secondary,
               elevation: 2,
             ),
-            onPressed: () {},
+            onPressed: onTapNotification,
             icon: Icon(Icons.notification_important),
           ),
         ],

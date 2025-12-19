@@ -18,7 +18,7 @@ class VendorDashboardScreen extends ConsumerStatefulWidget {
       _VendorDashboardScreenState();
 }
 
-class _VendorDashboardScreenState extends Controller {
+class _VendorDashboardScreenState extends _Controller {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(

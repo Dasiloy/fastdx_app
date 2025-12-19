@@ -1,3 +1,4 @@
+import 'package:fastdx_app/screens/vendor/edit_meal/edit_meal_screen.dart';
 import 'package:fastdx_app/widgets/widgets.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,7 +7,7 @@ import 'package:fastdx_app/models/models.dart';
 
 part 'meal_controller.dart';
 
-class VendorMealScreen extends Controller {
+class VendorMealScreen extends _Controller {
   const VendorMealScreen({super.key, required super.meal});
 
   @override
@@ -23,7 +24,15 @@ class VendorMealScreen extends Controller {
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             actions: [
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) {
+                        return VendorEditMealScreen();
+                      },
+                    ),
+                  );
+                },
                 icon: const Icon(
                   Icons.edit_outlined,
                   color: Colors.white,
@@ -274,7 +283,7 @@ class VendorMealScreen extends Controller {
                     const SizedBox(height: 12),
 
                     // Free Delivery Banner (if applicable)
-                    if (!meal.hasFreeDelivery)
+                    if (meal.hasFreeDelivery)
                       Container(
                         width: double.infinity,
                         padding: const EdgeInsets.symmetric(

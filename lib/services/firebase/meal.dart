@@ -40,12 +40,15 @@ class MealApi {
   }) async {
     try {
       Query<Map<String, dynamic>> query = api;
+
       if (resturantId != null) {
         query = query.where("resturantId", isEqualTo: resturantId);
       }
+
       if (category != null) {
         query = query.where("category", isEqualTo: category);
       }
+
       final snaps = await query.get(GetOptions(source: Source.serverAndCache));
       List<Map<String, dynamic>> meals = snaps.docs.map((doc) {
         return {...doc.data(), "id": doc.id};
@@ -133,6 +136,30 @@ class MealApi {
     } catch (e) {
       print(e);
       return null;
+    }
+  }
+
+  static Future<AppMeal?> update(
+    String id,
+    Map<String, dynamic> payload, {
+    bool plain = true,
+  }) async {
+    try {
+      await api.doc(id).update(payload);
+      return get(mealId: id, plain: plain);
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
+  static Future<bool> delete(String id) async {
+    try {
+      await api.doc(id).delete();
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
     }
   }
 }

@@ -102,38 +102,38 @@ class _VendorOrderState extends ConsumerState<VendorOrder> {
                 ).colorScheme.onSurface.withValues(alpha: 0.7),
               ),
             ),
-            if (widget.order.isAccepted)
-              GestureDetector(
-                onTap: () {
-                  Sheet.openListSheet(
-                    context: context,
-                    list: widget.order.items,
-                    initialChildSize: 0.6,
-                    tapBehaviour: TapBehavior.none,
-                    separator: Separator(
-                      margin: EdgeInsets.symmetric(vertical: 15),
-                    ),
-                    header: Text(
-                      '${widget.order.items.length} Order Item(s)',
-                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    itemBuilder: (_, _, item) {
-                      return VendorOrderItem(item: item);
-                    },
-                  );
-                },
-                child: Text(
-                  "View Items",
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    fontWeight: FontWeight.w500,
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.primary.withValues(alpha: 0.7),
+
+            GestureDetector(
+              onTap: () {
+                Sheet.openListSheet(
+                  context: context,
+                  list: widget.order.items,
+                  initialChildSize: 0.6,
+                  tapBehaviour: TapBehavior.none,
+                  separator: Separator(
+                    margin: EdgeInsets.symmetric(vertical: 15),
                   ),
+                  header: Text(
+                    '${widget.order.items.length} Order Item(s)',
+                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  itemBuilder: (_, _, item) {
+                    return VendorOrderItem(item: item);
+                  },
+                );
+              },
+              child: Text(
+                "View Items",
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                  fontWeight: FontWeight.w500,
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.primary.withValues(alpha: 0.7),
                 ),
               ),
+            ),
           ],
         ),
         if (widget.order.isPending) ...[

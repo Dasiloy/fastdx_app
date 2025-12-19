@@ -15,7 +15,6 @@ import 'package:fastdx_app/screens/auth/login/login_screen.dart';
 
 /**
  * 
- * BUILD MEAL DETAIL SCREEN
  * BUILD EDIT MEAL SCREEN
  * BUILD ADD MEAL SCREEN,
  * BUILD ORDER LIST SCREEN

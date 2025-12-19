@@ -53,16 +53,23 @@ class OrderApi {
   static Future<List<AppOrder>> list({
     String? customerId,
     String? resturantId,
+    String? status,
     bool fetchCustomer = false,
     bool fetchResturant = false,
   }) async {
     try {
       Query<Map<String, dynamic>> query = api;
+
       if (customerId != null) {
         query.where("customerId", isEqualTo: customerId);
       }
+
       if (resturantId != null) {
         query.where("resturantId", isEqualTo: resturantId);
+      }
+
+      if (status != null) {
+        query.where("status", isEqualTo: status);
       }
 
       final snaps = await query.get(GetOptions(source: Source.serverAndCache));

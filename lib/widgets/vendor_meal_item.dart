@@ -1,16 +1,60 @@
-import 'dart:io';
-
-import 'package:fastdx_app/widgets/widgets.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:transparent_image/transparent_image.dart';
 
+import 'package:fastdx_app/screens/screens.dart';
+import 'package:fastdx_app/widgets/widgets.dart';
 import 'package:fastdx_app/models/models.dart';
+import 'package:fastdx_app/services/services.dart';
+
+enum _Actions { edit, delete, toggle }
 
 class VendorMealItem extends ConsumerWidget {
   final AppMeal meal;
+  final void Function(AppMeal? meal) onToggleVissibility;
+  final void Function(String mealId, bool isDeleted) onDelete;
 
-  const VendorMealItem({super.key, required this.meal});
+  const VendorMealItem({
+    super.key,
+    required this.meal,
+    required this.onDelete,
+    required this.onToggleVissibility,
+  });
+
+  List<PopMenuModel> get _actions {
+    return [
+      PopMenuModel(
+        label: "Edit",
+        value: _Actions.edit,
+        icon: Icon(Icons.edit_outlined, size: 16),
+      ),
+      PopMenuModel(
+        label: meal.isAvailable ? "Hide" : "Show",
+        value: _Actions.toggle,
+        icon: Icon(
+          meal.isAvailable ? Icons.visibility : Icons.visibility_off,
+          size: 16,
+        ),
+      ),
+      PopMenuModel(
+        label: "Delete",
+        value: _Actions.delete,
+        icon: Icon(Icons.delete_outlined, size: 16),
+      ),
+    ];
+  }
+
+  Future<void> _onDeleteMeal() async {
+    final isDeleted = await MealApi.delete(meal.id);
+    onDelete(meal.id, isDeleted);
+  }
+
+  Future<void> _onToggleVisibility() async {
+    final newMeal = await MealApi.update(meal.id, {
+      "isAvailable": !meal.isAvailable,
+    }, plain: true);
+    onToggleVissibility(newMeal);
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -25,8 +69,8 @@ class VendorMealItem extends ConsumerWidget {
             child: FadeInImage.memoryNetwork(
               placeholder: kTransparentImage,
               image: meal.image,
-              width: 120,
-              height: 120,
+              width: 140,
+              height: 140,
               fit: BoxFit.cover,
             ),
           ),
@@ -36,7 +80,6 @@ class VendorMealItem extends ConsumerWidget {
             spacing: 0,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              SizedBox(height: 4),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -46,15 +89,41 @@ class VendorMealItem extends ConsumerWidget {
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  GestureDetector(
-                    onTap: () {},
-                    child: Icon(
-                      Platform.isAndroid ? Icons.more_vert : Icons.more_horiz,
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Transform.translate(
+                      offset: const Offset(15, 0),
+                      child: AppPopMenu(
+                        items: _actions,
+                        onSelected: (value) async {
+                          switch (value) {
+                            case _Actions.edit:
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) {
+                                    return VendorEditMealScreen();
+                                  },
+                                ),
+                              );
+                              break;
+
+                            case _Actions.delete:
+                              _onDeleteMeal();
+                              break;
+
+                            case _Actions.toggle:
+                              _onToggleVisibility();
+                              break;
+
+                            default:
+                              break;
+                          }
+                        },
+                      ),
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 6),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -67,7 +136,7 @@ class VendorMealItem extends ConsumerWidget {
                   ),
                 ],
               ),
-              SizedBox(height: 6),
+              const SizedBox(height: 6),
               Row(
                 children: [
                   Row(
@@ -78,7 +147,7 @@ class VendorMealItem extends ConsumerWidget {
                         size: 18,
                         color: Theme.of(context).colorScheme.primary,
                       ),
-                      SizedBox(width: 6),
+                      const SizedBox(width: 6),
                       Text(
                         "4.9",
                         style: Theme.of(context).textTheme.bodySmall!.copyWith(
