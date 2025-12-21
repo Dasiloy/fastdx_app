@@ -119,31 +119,28 @@ class DataList<T> extends StatelessWidget {
 
   Widget _buildEmptyView(BuildContext context) {
     return emptyWidget ??
-        SizedBox(
-          height: height,
-          width: double.infinity,
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                emptyIcon ??
-                    Icon(
-                      Icons.inbox_outlined,
-                      size: 80,
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.onSurface.withValues(alpha: 0.7),
-                    ),
-                SizedBox(height: 8),
-                Text(
-                  emptyLabel,
-                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                    fontWeight: FontWeight.w500,
-                    color: Theme.of(context).colorScheme.onSurface,
+        Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              emptyIcon ??
+                  Icon(
+                    Icons.inbox_outlined,
+                    size: 80,
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.7),
                   ),
+              SizedBox(height: 8),
+              Text(
+                emptyLabel,
+                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                  fontWeight: FontWeight.w500,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
   }

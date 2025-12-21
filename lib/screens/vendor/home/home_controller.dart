@@ -56,12 +56,7 @@ abstract class _Controller extends ConsumerState<VendorHomeScreen> {
           backgroundColor: Utils.isLightMode(context)
               ? Theme.of(context).colorScheme.surfaceContainerLowest
               : Theme.of(context).scaffoldBackgroundColor,
-          title: Text(
-            "My Food List",
-            style: Theme.of(
-              context,
-            ).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w600),
-          ),
+          title: Text("My Food List"),
         );
 
       case TabEnum.orders:
@@ -70,12 +65,7 @@ abstract class _Controller extends ConsumerState<VendorHomeScreen> {
           backgroundColor: Utils.isLightMode(context)
               ? Theme.of(context).colorScheme.surfaceContainerLowest
               : Theme.of(context).scaffoldBackgroundColor,
-          title: Text(
-            "Order List",
-            style: Theme.of(
-              context,
-            ).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w600),
-          ),
+          title: Text("Order List"),
         );
 
       default:

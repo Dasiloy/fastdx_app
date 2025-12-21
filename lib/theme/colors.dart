@@ -12,6 +12,14 @@ class AppColors {
   static const tabColor = Color(0xFFAFAFAF);
   static const tabColorDark = Color(0xFFBDBDBD);
 
+  // Bg
+  static const bgLight = Color(0xFFFDFDFD);
+  static const bgDark = Color(0xFF121212);
+
+  // border
+  static const borderLight = Color(0xFFE8EAED);
+  static const borderDark = Color(0xFF1E1E1E);
+
   // Common colors (you can add as needed)
   static const gray = Color(0xFFE3EBF2);
   static const grayDark = Color(0xFF3C4A55);

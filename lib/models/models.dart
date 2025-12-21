@@ -11,3 +11,4 @@ export "package:fastdx_app/models/rider_model.dart";
 export 'package:fastdx_app/models/transaction_model.dart';
 export "package:fastdx_app/models/tab_model.dart";
 export "package:fastdx_app/models/pop_menu_model.dart";
+export "package:fastdx_app/models/review_model.dart";

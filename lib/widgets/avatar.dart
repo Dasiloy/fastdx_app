@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 
 class Avatar extends StatelessWidget {
   final double size;
-  final String? image;
+  final ImageProvider? image;
+  final bool showShadow;
   final void Function()? onPress;
 
   const Avatar({
     super.key,
-    required this.size,
     this.onPress,
-    this.image = "assets/images/avatar.jpg",
+    required this.size,
+    this.showShadow = true,
+    this.image,
   });
 
   @override
@@ -21,16 +23,21 @@ class Avatar extends StatelessWidget {
         width: size,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.1),
-              blurRadius: 1,
-              spreadRadius: 0.5,
-              offset: const Offset(0, 1.5),
-              blurStyle: BlurStyle.normal,
-            ),
-          ],
-          image: DecorationImage(image: AssetImage(image!), fit: BoxFit.cover),
+          boxShadow: showShadow
+              ? [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.1),
+                    blurRadius: 1,
+                    spreadRadius: 0.5,
+                    offset: const Offset(0, 1.5),
+                    blurStyle: BlurStyle.normal,
+                  ),
+                ]
+              : null,
+          image: DecorationImage(
+            image: image ?? const AssetImage("assets/images/avatar.jpg"),
+            fit: BoxFit.cover,
+          ),
         ),
       ),
     );

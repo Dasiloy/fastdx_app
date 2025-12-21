@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 class Input extends StatefulWidget {
   // Component Props
   final String? label;
+  final double labelGap;
   final bool isPassword;
   final IconData? prefixIcon;
 
   // Extend all props of TextFormField
+  final int? minLines;
+  final int? maxLines;
   final InputDecoration decoration;
   final TextEditingController? controller;
   final String? Function(String?)? validator;
@@ -44,6 +47,9 @@ class Input extends StatefulWidget {
     this.initialValue,
     required this.decoration,
     this.onSaved,
+    this.minLines,
+    this.maxLines,
+    this.labelGap = 8,
     this.autovalidateMode = AutovalidateMode.onUserInteraction,
   });
 
@@ -95,9 +101,11 @@ class _State extends State<Input> {
               ).colorScheme.onSurface.withValues(alpha: 0.8),
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: widget.labelGap),
         ],
         TextFormField(
+          minLines: widget.minLines,
+          maxLines: widget.maxLines,
           controller: widget.controller,
           validator: widget.validator,
           keyboardType: widget.keyboardType,
@@ -113,8 +121,10 @@ class _State extends State<Input> {
           autocorrect: widget.autocorrect!,
           autovalidateMode: widget.autovalidateMode,
           decoration: widget.decoration.copyWith(
-            fillColor: Theme.of(context).colorScheme.surfaceContainerLowest,
-            suffixIcon: _passwordIcon,
+            fillColor:
+                widget.decoration.fillColor ??
+                Theme.of(context).colorScheme.surfaceContainerLowest,
+            suffixIcon: widget.decoration.suffixIcon ?? _passwordIcon,
           ),
           onSaved: widget.onSaved,
           style: Theme.of(

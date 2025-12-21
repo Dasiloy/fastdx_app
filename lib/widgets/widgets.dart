@@ -25,3 +25,6 @@ export "package:fastdx_app/widgets/meal_ingredient.dart";
 export "package:fastdx_app/widgets/meal_category.dart";
 export 'package:fastdx_app/widgets/app_pop_menu.dart';
 export 'package:fastdx_app/widgets/vendor_order_tab.dart';
+export "package:fastdx_app/widgets/vendor_review.dart";
+export "package:fastdx_app/widgets/upload_input.dart";
+export "package:fastdx_app/widgets/meal_category_picker.dart";

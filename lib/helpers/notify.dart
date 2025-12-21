@@ -18,6 +18,7 @@ class Notify {
         ),
         showCloseIcon: true,
         behavior: SnackBarBehavior.fixed,
+        closeIconColor: Theme.of(context).colorScheme.onSurface,
         backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
       ),
     );
@@ -34,8 +35,10 @@ class Notify {
             fontWeight: FontWeight.w500,
           ),
         ),
+        elevation: 1.5,
         showCloseIcon: true,
-        behavior: SnackBarBehavior.fixed,
+        behavior: SnackBarBehavior.floating,
+        closeIconColor: Theme.of(context).colorScheme.onSurface,
         backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
       ),
     );

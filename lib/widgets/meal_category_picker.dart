@@ -5,16 +5,16 @@ import 'package:fastdx_app/theme/theme.dart';
 import 'package:fastdx_app/helpers/helpers.dart';
 import "package:fastdx_app/core/extensions/extensions.dart";
 
-class MealIngredient extends StatelessWidget {
+class MealCategoryPicker extends StatelessWidget {
   final bool isActive;
-  final Function(MealIngredientsEnum ingridient)? onTap;
-  final MealIngredientsEnum ingridient;
+  final MealCategoryEnum category;
+  final Function(MealCategoryEnum category)? onTap;
 
-  const MealIngredient({
+  const MealCategoryPicker({
     super.key,
-    required this.ingridient,
+    required this.category,
+    this.isActive = false,
     this.onTap,
-    this.isActive = true,
   });
 
   @override
@@ -24,13 +24,13 @@ class MealIngredient extends StatelessWidget {
         : AppColors.borderDark;
 
     final fillColor = isActive
-        ? Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.6)
+        ? category.lightColor
         : Utils.isLightMode(context)
         ? AppColors.bgLight
         : AppColors.bgDark;
 
     final iconColor = isActive
-        ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.7)
+        ? category.color
         : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7);
 
     return Column(
@@ -38,7 +38,7 @@ class MealIngredient extends StatelessWidget {
       children: [
         GestureDetector(
           onTap: () {
-            onTap?.call(ingridient);
+            onTap?.call(category);
           },
           child: Container(
             width: 50,
@@ -48,11 +48,11 @@ class MealIngredient extends StatelessWidget {
               border: Border.all(color: borderColor, width: isActive ? 0 : 1),
               shape: BoxShape.circle,
             ),
-            child: Icon(ingridient.icon, size: 24, color: iconColor),
+            child: Icon(category.icon, size: 24, color: iconColor),
           ),
         ),
         const SizedBox(height: 7),
-        Text(Utils.getFormattedStringFromCamelCase(ingridient.name)),
+        Text(Utils.getFormattedStringFromCamelCase(category.name)),
       ],
     );
   }

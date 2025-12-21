@@ -32,6 +32,35 @@ extension ExtensionMealCategoryEnum on MealCategoryEnum {
     }
   }
 
+  IconData get icon {
+    switch (this) {
+      case MealCategoryEnum.burger:
+        return Icons.lunch_dining; // Burger-like
+      case MealCategoryEnum.hotDog:
+        return Icons.fastfood; // Hot dog/fast food
+      case MealCategoryEnum.pizza:
+        return Icons.local_pizza; // Pizza slice
+      case MealCategoryEnum.pasta:
+        return Icons.ramen_dining; // Noodles/pasta-ish
+      case MealCategoryEnum.fries:
+        return Icons.crisis_alert; // Stylized, or change to any you prefer
+      case MealCategoryEnum.drink:
+        return Icons.local_drink; // Beverage
+      case MealCategoryEnum.chicken:
+        return Icons.set_meal; // Protein/meat
+      case MealCategoryEnum.dessert:
+        return Icons.cake; // Dessert/sweet
+      case MealCategoryEnum.seafood:
+        return Icons.set_meal; // Also works for fish/seafood
+      case MealCategoryEnum.sandwich:
+        return Icons.lunch_dining; // Works for sandwich too
+      case MealCategoryEnum.salad:
+        return Icons.eco; // Leaf/green
+      case MealCategoryEnum.rice:
+        return Icons.rice_bowl; // Rice bowl
+    }
+  }
+
   Color get lightColor {
     return color.withValues(alpha: 0.15);
   }

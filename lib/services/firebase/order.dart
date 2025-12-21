@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:fastdx_app/services/firebase/resturant.dart';
-import 'package:fastdx_app/services/firebase/rider.dart';
 import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -9,6 +7,8 @@ import 'package:fastdx_app/models/models.dart';
 import 'package:fastdx_app/services/firebase/meal.dart';
 import 'package:fastdx_app/services/firebase/api.dart';
 import 'package:fastdx_app/services/firebase/profile.dart';
+import 'package:fastdx_app/services/firebase/resturant.dart';
+import 'package:fastdx_app/services/firebase/rider.dart';
 
 class OrderApi {
   static final api = kFireStore.collection("orders");
@@ -120,7 +120,7 @@ class OrderApi {
   }) async {
     try {
       final data = await getDoc(
-        orderId: orderId,
+        orderId,
         fetchCustomer: fetchCustomer,
         fetchResturant: fetchResturant,
         fetchRider: fetchRider,
@@ -134,8 +134,8 @@ class OrderApi {
     }
   }
 
-  static Future<Map<String, dynamic>?> getDoc({
-    required String orderId,
+  static Future<Map<String, dynamic>?> getDoc(
+    String orderId, {
     bool fetchCustomer = false,
     bool fetchResturant = false,
     bool fetchRider = false,

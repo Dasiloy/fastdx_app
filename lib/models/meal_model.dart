@@ -11,10 +11,11 @@ class AppMeal implements EntityInterface {
   final String image;
   final double price;
   final double ratings;
-  final bool isAvailable; //
+  final bool
+  isAvailable; // meal can be saved to draft or svaed , when saved to draft, they are set as not avaliable , else they become avaliable
   final Duration prepTime; //
   final String description;
-  final bool hasFreeDelivery; //
+  final bool hasFreeDelivery;
   final MealCategoryEnum category;
   final List<MealIngredientsEnum> ingredients;
 

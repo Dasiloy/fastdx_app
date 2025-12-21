@@ -1,10 +1,10 @@
-import 'package:fastdx_app/core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
+import 'package:fastdx_app/core/core.dart';
 import "package:fastdx_app/services/services.dart";
 import 'package:fastdx_app/theme/theme.dart';
 import 'package:fastdx_app/screens/screens.dart';
@@ -15,11 +15,8 @@ import 'package:fastdx_app/screens/auth/login/login_screen.dart';
 
 /**
  * 
- * BUILD EDIT MEAL SCREEN
- * BUILD ADD MEAL SCREEN,
- * BUILD ORDER LIST SCREEN
- * BUILD REVIEW LIST SCREEN,
  * BUILD NOTIFICATIONS SCREEN
+ * BUILD CHAT SCREEN
  * BUILD PROFILE PAGES
  * 
  */
