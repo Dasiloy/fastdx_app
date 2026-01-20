@@ -6,6 +6,7 @@ import 'package:fastdx_app/services/services.dart';
 import 'package:fastdx_app/widgets/widgets.dart';
 import 'package:fastdx_app/models/models.dart';
 import 'package:fastdx_app/screens/vendor/edit_meal/edit_meal_screen.dart';
+import 'package:fastdx_app/providers/meals_provider.dart';
 
 part 'meal_controller.dart';
 
@@ -23,7 +24,12 @@ class VendorMealScreen extends ConsumerStatefulWidget {
 class _State extends _Controler {
   @override
   Widget build(BuildContext context) {
-    final meal = widget.meal;
+    // Watch for updates to this specific meal
+    final asyncValue = ref.watch(mealDetailProvider(widget.meal.id));
+
+    // Use the latest data if available, otherwise fallback to the passed data
+    final meal = asyncValue.asData?.value ?? widget.meal;
+    final isAvailable = optimisticIsAvailable ?? meal.isAvailable;
 
     return Material(
       child: Container(
@@ -55,7 +61,7 @@ class _State extends _Controler {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (_) {
-                          return VendorEditMealScreen();
+                          return VendorEditMealScreen(meal: meal);
                         },
                       ),
                     );
@@ -152,12 +158,12 @@ class _State extends _Controler {
                               vertical: 6,
                             ),
                             decoration: BoxDecoration(
-                              color: meal.isAvailable
+                              color: isAvailable
                                   ? Colors.green.withValues(alpha: 0.1)
                                   : Colors.red.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(20),
                               border: Border.all(
-                                color: meal.isAvailable
+                                color: isAvailable
                                     ? Colors.green.withValues(alpha: 0.3)
                                     : Colors.red.withValues(alpha: 0.3),
                                 width: 1,
@@ -170,7 +176,7 @@ class _State extends _Controler {
                                   width: 8,
                                   height: 8,
                                   decoration: BoxDecoration(
-                                    color: meal.isAvailable
+                                    color: isAvailable
                                         ? Colors.green
                                         : Colors.red,
                                     shape: BoxShape.circle,
@@ -178,11 +184,9 @@ class _State extends _Controler {
                                 ),
                                 const SizedBox(width: 6),
                                 Text(
-                                  meal.isAvailable
-                                      ? 'Available'
-                                      : 'Unavailable',
+                                  isAvailable ? 'Available' : 'Unavailable',
                                   style: TextStyle(
-                                    color: meal.isAvailable
+                                    color: isAvailable
                                         ? Colors.green
                                         : Colors.red,
                                     fontSize: 12,

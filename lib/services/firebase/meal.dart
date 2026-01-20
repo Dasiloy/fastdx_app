@@ -1,13 +1,17 @@
 import "dart:convert";
-
-import "package:flutter/services.dart" show rootBundle;
+import "dart:io";
 
 import "package:cloud_firestore/cloud_firestore.dart";
+import "package:flutter/material.dart";
+import "package:flutter/services.dart" show rootBundle;
+
+import "package:fastdx_app/dtos/dtos.dart";
 import "package:fastdx_app/models/models.dart";
 import "package:fastdx_app/services/firebase/resturant.dart";
 import 'package:fastdx_app/services/firebase/api.dart';
 
 class MealApi {
+  static final storage = kFireStorage.ref().child("meals");
   static final api = kFireStore.collection('meals');
 
   // dummy method will be removed later
@@ -33,11 +37,25 @@ class MealApi {
     }
   }
 
-  static Future<List<AppMeal>> list({
-    bool plain = true,
-    String? resturantId,
-    String? category,
-  }) async {
+  static Future<void> post(MealDto data) async {
+    try {
+      data.image = await upload(name: data.name, file: data.file!);
+      final docRef = api.doc();
+      await docRef.set(data.toMap());
+    } on FirebaseException catch (e, st) {
+      debugPrint("Storage error: ${e.code} - ${e.message}\n$st");
+      rethrow;
+    } catch (e, st) {
+      debugPrint("Unknown error posting meal: $e\n$st");
+      rethrow;
+    }
+  }
+
+  static Future<List<AppMeal>> list(ListMealsParams? params) async {
+    final plain = params?.plain ?? true;
+    final resturantId = params?.resturantId;
+    final category = params?.category;
+
     try {
       Query<Map<String, dynamic>> query = api;
 
@@ -89,7 +107,6 @@ class MealApi {
 
       return meals.map((data) => AppMeal.fromJson(data)).toList();
     } catch (e) {
-      print(e);
       return [];
     }
   }
@@ -103,7 +120,6 @@ class MealApi {
       if (data == null) return null;
       return AppMeal.fromJson(data);
     } catch (e) {
-      print(e);
       return null;
     }
   }
@@ -145,10 +161,20 @@ class MealApi {
     bool plain = true,
   }) async {
     try {
+      if (payload["image"] != null) {
+        await deleteImage(payload["image"]!);
+      }
+
+      if (payload["file"] != null) {
+        payload["image"] = await upload(
+          name: payload["name"]!,
+          file: payload["file"]!,
+        );
+      }
+
       await api.doc(id).update(payload);
       return get(mealId: id, plain: plain);
     } catch (e) {
-      print(e);
       return null;
     }
   }
@@ -162,4 +188,49 @@ class MealApi {
       return false;
     }
   }
+
+  static Future<void> deleteImage(String imageUrl) async {
+    try {
+      final ref = storage.child(imageUrl);
+      await ref.delete();
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  static Future<String> upload({
+    required String name,
+    required File file,
+  }) async {
+    final ref = storage.child(MealApi._getFileName(name));
+    await ref.putData(await file.readAsBytes());
+    final downloadUrl = await ref.getDownloadURL();
+
+    return downloadUrl;
+  }
+
+  static String _getFileName(String name) =>
+      "${DateTime.now().millisecondsSinceEpoch}$name.jpg";
+}
+
+///  Define query parameters
+class ListMealsParams {
+  final bool plain;
+  final String? resturantId;
+  final String? category;
+
+  ListMealsParams({this.plain = true, this.resturantId, this.category});
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is ListMealsParams &&
+        other.plain == plain &&
+        other.resturantId == resturantId &&
+        other.category == category;
+  }
+
+  @override
+  int get hashCode => plain.hashCode ^ resturantId.hashCode ^ category.hashCode;
 }

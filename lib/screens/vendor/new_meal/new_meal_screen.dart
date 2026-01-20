@@ -1,24 +1,22 @@
 import "package:flutter/material.dart";
 import "package:duration_picker/duration_picker.dart";
 
+import "package:fastdx_app/services/services.dart";
 import "package:fastdx_app/core/core.dart";
 import "package:fastdx_app/theme/theme.dart";
 import "package:fastdx_app/dtos/meal_dto.dart";
 import "package:fastdx_app/widgets/widgets.dart";
 import "package:fastdx_app/helpers/helpers.dart";
+import "package:fastdx_app/providers/providers.dart";
+import "package:flutter_riverpod/flutter_riverpod.dart";
 
 part 'new_meal_controller.dart';
 
-/// Validation
-/// uploading image
-/// creating meal
-/// saving meal
-
-class VendorNewMealScreen extends StatefulWidget {
+class VendorNewMealScreen extends ConsumerStatefulWidget {
   const VendorNewMealScreen({super.key});
 
   @override
-  State<VendorNewMealScreen> createState() {
+  ConsumerState<VendorNewMealScreen> createState() {
     return _State();
   }
 }
@@ -28,8 +26,20 @@ class _State extends _Controller {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: null,
-        child: const Icon(Icons.add_outlined),
+        onPressed: _isPosting ? null : _onTapSaveMeal,
+        child: _isPosting
+            ? SizedBox(
+                height: 20,
+                width: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
+              )
+            : Icon(
+                Icons.add_outlined,
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
       ),
       appBar: AppBar(
         title: Text("Add New Meal"),
@@ -38,12 +48,7 @@ class _State extends _Controller {
             : Theme.of(context).scaffoldBackgroundColor,
         actions: [
           TextButton(
-            onPressed: () {
-              _key.currentState?.reset();
-              setState(() {
-                _mealDto = MealDto();
-              });
-            },
+            onPressed: _isPosting ? null : _resetState,
             child: Text("RESET"),
           ),
         ],
@@ -67,11 +72,9 @@ class _State extends _Controller {
                 onSaved: (name) {
                   _mealDto.name = name ?? "";
                 },
-                // validator: validateEmail,
                 keyboardType: TextInputType.text,
                 textInputAction: TextInputAction.go,
                 textCapitalization: TextCapitalization.words,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
                 decoration: AppStyle.getOutlinedInputDecoration(
                   context,
                 ).copyWith(hintText: "Mazalichiken Halim"),

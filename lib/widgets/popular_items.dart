@@ -9,6 +9,7 @@ import 'package:fastdx_app/widgets/widgets.dart';
 import 'package:fastdx_app/screens/screens.dart';
 import 'package:fastdx_app/providers/providers.dart';
 import 'package:fastdx_app/services/services.dart';
+import 'package:fastdx_app/providers/meals_provider.dart';
 
 class PopularItems extends ConsumerStatefulWidget {
   const PopularItems({super.key});
@@ -18,26 +19,18 @@ class PopularItems extends ConsumerStatefulWidget {
 }
 
 class _PopularItemsState extends ConsumerState<PopularItems> {
-  late Future<List<AppMeal>> _meals;
-
-  @override
-  void initState() {
-    super.initState();
-    _meals = _getMeals();
-  }
-
-  Future<List<AppMeal>> _getMeals() async {
-    final resturantId = ref.read(appProvider).resturant!.id;
-    try {
-      final result = await MealApi.list(plain: true, resturantId: resturantId);
-      return result;
-    } catch (e) {
-      return [];
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    final resturantId = ref.watch(appProvider).resturant?.id;
+
+    if (resturantId == null) {
+      return SizedBox();
+    }
+
+    final asyncValue = ref.watch(
+      mealsProvider(ListMealsParams(plain: true, resturantId: resturantId)),
+    );
+
     return AppCard(
       pt: 13,
       pl: 16,
@@ -51,17 +44,13 @@ class _PopularItemsState extends ConsumerState<PopularItems> {
           children: [
             AppCardHeader.text(label: "Popular Meals This Week"),
             Expanded(
-              child: FutureBuilder(
-                future: _meals,
-                initialData: [],
-                builder: (context, asyncSnapshot) {
+              child: asyncValue.when(
+                data: (meals) {
                   return HorizontalList(
-                    data: asyncSnapshot.data!.cast<AppMeal>(),
+                    data: meals,
                     borderRadius: 16,
                     emptyLabel: "No meals yet",
-                    isLoading:
-                        asyncSnapshot.connectionState ==
-                        ConnectionState.waiting,
+                    isLoading: false,
                     separator: SizedBox(width: 12),
                     tapBehavior: TapBehavior.inkWell,
                     onTap: (ctx, meal) {
@@ -76,6 +65,20 @@ class _PopularItemsState extends ConsumerState<PopularItems> {
                     itemBuilder: (_, index, meal) {
                       return _PopularItem(meal: meal);
                     },
+                  );
+                },
+                error: (error, st) {
+                  return Center(child: Text("Error loading meals"));
+                },
+                loading: () {
+                  return HorizontalList(
+                    data: [],
+                    borderRadius: 16,
+                    emptyLabel: "",
+                    isLoading: true,
+                    separator: SizedBox(width: 12),
+                    tapBehavior: TapBehavior.none,
+                    itemBuilder: (_, __, ___) => SizedBox(),
                   );
                 },
               ),

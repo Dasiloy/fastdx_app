@@ -105,7 +105,7 @@ class _State extends State<Input> {
         ],
         TextFormField(
           minLines: widget.minLines,
-          maxLines: widget.maxLines,
+          maxLines: _obscure ? 1 : widget.maxLines,
           controller: widget.controller,
           validator: widget.validator,
           keyboardType: widget.keyboardType,
