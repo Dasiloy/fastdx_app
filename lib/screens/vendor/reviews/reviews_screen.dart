@@ -1,27 +1,30 @@
-import "package:fastdx_app/core/core.dart";
 import "package:flutter/material.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 
+import "package:fastdx_app/core/core.dart";
 import "package:fastdx_app/helpers/helpers.dart";
 import "package:fastdx_app/services/services.dart";
 import "package:fastdx_app/providers/providers.dart";
-import "package:fastdx_app/models/models.dart";
 import "package:fastdx_app/widgets/widgets.dart";
 
-part 'reviews_controller.dart';
-
-class VendorReviewsScreen extends ConsumerStatefulWidget {
+class VendorReviewsScreen extends ConsumerWidget {
   const VendorReviewsScreen({super.key});
 
   @override
-  ConsumerState<VendorReviewsScreen> createState() {
-    return _State();
-  }
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final resturantId = ref.read(appProvider).resturant!.id;
 
-class _State extends _Controller {
-  @override
-  Widget build(BuildContext context) {
+    // watch for changes to review
+    final asyncValue = ref.watch(
+      reviewsProvider(
+        ListReviewsParams(resturantId: resturantId, fetchCustomer: true),
+      ),
+    );
+
+    // data, isloading and error
+    final data = asyncValue.asData?.value ?? [];
+    final isLoading = asyncValue.isLoading && !asyncValue.hasValue;
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Reviews"),
@@ -32,27 +35,34 @@ class _State extends _Controller {
       backgroundColor: Utils.isLightMode(context)
           ? Theme.of(context).colorScheme.surfaceContainerLowest
           : Theme.of(context).scaffoldBackgroundColor,
-      body: FutureBuilder(
-        initialData: [],
-        future: _data,
-        builder: (_, asyncSnapshot) {
-          return DataList(
-            shimmerItemCount: 5,
-            separator: Separator(
-              height: 0,
-              width: 0,
-              style: SeparatorStyle.none,
-              margin: EdgeInsets.symmetric(vertical: 10),
+      body: DataList(
+        shimmerItemCount: 5,
+        onRefresh: () async {
+          ref.invalidate(
+            reviewsProvider(
+              ListReviewsParams(resturantId: resturantId, fetchCustomer: true),
             ),
-            emptyLabel: "No review found!",
-            tapBehavior: TapBehavior.gestureDetector,
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-            isLoading: asyncSnapshot.connectionState == ConnectionState.waiting,
-            data: asyncSnapshot.data!.cast<AppReview>(),
-            itemBuilder: (_, _, review) {
-              return VendorReview(review: review);
-            },
           );
+
+          await ref.read(
+            reviewsProvider(
+              ListReviewsParams(resturantId: resturantId, fetchCustomer: true),
+            ).future,
+          );
+        },
+        separator: Separator(
+          height: 0,
+          width: 0,
+          style: SeparatorStyle.none,
+          margin: EdgeInsets.symmetric(vertical: 10),
+        ),
+        emptyLabel: "No review found!",
+        tapBehavior: TapBehavior.gestureDetector,
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        isLoading: isLoading,
+        data: data,
+        itemBuilder: (_, _, review) {
+          return VendorReview(review: review);
         },
       ),
     );

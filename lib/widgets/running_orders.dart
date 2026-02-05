@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:fastdx_app/core/core.dart';
 import 'package:fastdx_app/widgets/widgets.dart';
 import 'package:fastdx_app/providers/providers.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fastdx_app/services/services.dart';
 
-class OrderRequests extends ConsumerWidget {
+class RunningOrders extends ConsumerWidget {
   final ScrollController? controller;
-  const OrderRequests({super.key, this.controller});
+  const RunningOrders({super.key, this.controller});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -16,7 +16,7 @@ class OrderRequests extends ConsumerWidget {
       ordersProvider(
         ListOrdersParams(
           resturantId: ref.watch(appProvider).resturant?.id,
-          status: OrderStatusEnum.pending.name,
+          status: OrderStatusEnum.accepted.name,
           fetchCustomer: true,
         ),
       ),
@@ -33,13 +33,13 @@ class OrderRequests extends ConsumerWidget {
       tapBehavior: TapBehavior.none,
       separator: Separator(margin: EdgeInsets.symmetric(vertical: 15)),
       header: Text(
-        '${orders.length} Order Request(s)',
+        '${orders.length} Running Order(s)',
         style: Theme.of(
           context,
         ).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w400),
       ),
-      itemBuilder: (_, index, order) {
-        return VendorOrder(order: order, key: ObjectKey(order));
+      itemBuilder: (_, _, order) {
+        return VendorOrder(order: order);
       },
     );
   }

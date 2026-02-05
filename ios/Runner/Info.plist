@@ -6,7 +6,7 @@
 		<false/>
 		<key>AssociatedDomains</key>
 		<array>
-		<string>applinks:fastdxapp.firebaseapp.com</string>
+			<string>applinks:fastdxapp.firebaseapp.com</string>
 		</array>
 		<key>NSPhotoLibraryUsageDescription</key>
 		<string>Allow FastDx to access Gallery?</string>

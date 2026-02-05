@@ -32,22 +32,22 @@ class ReviewApi {
     }
   }
 
-  static Future<List<AppReview>> list({
-    String? customerId,
-    String? resturantId,
-    bool fetchOrder = false,
-    bool fetchCustomer = false,
-    bool fetchResturant = false,
-  }) async {
+  static Future<List<AppReview>> list(ListReviewsParams params) async {
     try {
       Query<Map<String, dynamic>> query = api;
 
+      final customerId = params.customerId;
+      final resturantId = params.resturantId;
+      final fetchCustomer = params.fetchCustomer;
+      final fetchResturant = params.fetchResturant;
+      final fetchOrder = params.fetchOrder;
+
       if (customerId != null) {
-        query.where("customerId", isEqualTo: customerId);
+        query = query.where("customerId", isEqualTo: customerId);
       }
 
       if (resturantId != null) {
-        query.where("resturantId", isEqualTo: resturantId);
+        query = query.where("resturantId", isEqualTo: resturantId);
       }
 
       final snaps = await query.get(GetOptions(source: Source.serverAndCache));
@@ -93,19 +93,21 @@ class ReviewApi {
     }
   }
 
-  static Future<ReviewAggregate> getAggregate({
-    String? customerId,
-    String? resturantId,
-  }) async {
+  static Future<ReviewAggregate> getAggregate(
+    ReviewAggregateParams params,
+  ) async {
     try {
       Query<Map<String, dynamic>> query = api;
 
+      final customerId = params.customerId;
+      final resturantId = params.resturantId;
+
       if (customerId != null) {
-        query.where("customerId", isEqualTo: customerId);
+        query = query.where("customerId", isEqualTo: customerId);
       }
 
       if (resturantId != null) {
-        query.where("resturantId", isEqualTo: resturantId);
+        query = query.where("resturantId", isEqualTo: resturantId);
       }
 
       final aggregates = await query
@@ -120,5 +122,63 @@ class ReviewApi {
       print(e);
       return ReviewAggregate();
     }
+  }
+}
+
+class ListReviewsParams {
+  final String? customerId;
+  final String? resturantId;
+  final bool fetchCustomer;
+  final bool fetchResturant;
+  final bool fetchOrder;
+
+  ListReviewsParams({
+    this.customerId,
+    this.resturantId,
+    this.fetchCustomer = false,
+    this.fetchResturant = false,
+    this.fetchOrder = false,
+  });
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is ListReviewsParams &&
+        other.customerId == customerId &&
+        other.resturantId == resturantId &&
+        other.fetchCustomer == fetchCustomer &&
+        other.fetchResturant == fetchResturant &&
+        other.fetchOrder == fetchOrder;
+  }
+
+  @override
+  int get hashCode {
+    return customerId.hashCode ^
+        resturantId.hashCode ^
+        fetchCustomer.hashCode ^
+        fetchResturant.hashCode ^
+        fetchOrder.hashCode;
+  }
+}
+
+class ReviewAggregateParams {
+  final String? customerId;
+  final String? resturantId;
+
+  ReviewAggregateParams({this.customerId, this.resturantId});
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is ReviewAggregateParams &&
+        other.customerId == customerId &&
+        other.resturantId == resturantId;
+  }
+
+  @override
+  int get hashCode {
+    return customerId.hashCode ^ resturantId.hashCode;
   }
 }

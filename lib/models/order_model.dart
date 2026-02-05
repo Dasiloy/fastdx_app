@@ -153,3 +153,29 @@ class AppOrder implements EntityInterface {
         .toList();
   }
 }
+
+class OrderAggregates {
+  final int runningOrdersCount;
+  final int pendingOrdersCount;
+  final int completedOrdersCount;
+  final int cancelledOrdersCount;
+  final int totalOrdersCount;
+
+  OrderAggregates({
+    required this.runningOrdersCount,
+    required this.pendingOrdersCount,
+    required this.completedOrdersCount,
+    required this.cancelledOrdersCount,
+    required this.totalOrdersCount,
+  });
+
+  factory OrderAggregates.fromJson(Map<String, dynamic> json) {
+    return OrderAggregates(
+      runningOrdersCount: json["runningOrdersCount"],
+      pendingOrdersCount: json["pendingOrdersCount"],
+      completedOrdersCount: json["completedOrdersCount"],
+      cancelledOrdersCount: json["cancelledOrdersCount"],
+      totalOrdersCount: json["totalOrdersCount"],
+    );
+  }
+}

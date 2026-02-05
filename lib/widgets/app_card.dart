@@ -78,6 +78,8 @@ class AppCard extends StatelessWidget {
   final double? pt;
   final double? pb;
   final Widget child;
+  final Color? color;
+  final double? radius;
   final void Function()? onPress;
 
   const AppCard({
@@ -87,6 +89,8 @@ class AppCard extends StatelessWidget {
     this.pr = 16,
     this.pb = 18,
     this.pt = 18,
+    this.radius = 12,
+    this.color,
     this.onPress,
   });
 
@@ -97,7 +101,10 @@ class AppCard extends StatelessWidget {
     return Card(
       margin: EdgeInsets.zero,
       clipBehavior: Clip.hardEdge,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      color: color,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(radius!),
+      ),
       child: InkWell(
         enableFeedback: clickable,
         onTap: onPress,

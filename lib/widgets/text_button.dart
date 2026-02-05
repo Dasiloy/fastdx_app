@@ -5,6 +5,9 @@ class AppTextButton extends StatelessWidget {
   final TextStyle? style;
   final bool? enableFeedback;
   final void Function()? onPress;
+  final Decoration? decoration;
+  final EdgeInsetsGeometry? padding;
+  final TextAlign? textAlign;
 
   // ignore: prefer_const_constructors_in_immutables
   AppTextButton({
@@ -12,12 +15,16 @@ class AppTextButton extends StatelessWidget {
     required this.label,
     this.style,
     this.onPress,
+    this.decoration,
+    this.padding,
+    this.textAlign,
     this.enableFeedback = false,
   });
 
   Widget getChild(BuildContext context) {
     return Text(
       label,
+      textAlign: textAlign,
       style: Theme.of(context).textTheme.labelSmall!
           .copyWith(
             height: 0,
@@ -31,10 +38,20 @@ class AppTextButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Widget child = InkWell(onTap: onPress, child: getChild(context));
+
     if (!enableFeedback!) {
-      return GestureDetector(onTap: onPress, child: getChild(context));
+      child = GestureDetector(onTap: onPress, child: getChild(context));
     }
 
-    return InkWell(onTap: onPress, child: getChild(context));
+    if (padding != null) {
+      child = Padding(padding: padding!, child: child);
+    }
+
+    if (decoration != null) {
+      child = DecoratedBox(decoration: decoration!, child: child);
+    }
+
+    return child;
   }
 }

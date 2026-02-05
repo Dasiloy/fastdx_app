@@ -6,19 +6,12 @@ import 'package:fastdx_app/models/models.dart';
 import 'package:fastdx_app/widgets/widgets.dart';
 import "package:fastdx_app/helpers/helpers.dart";
 import 'package:fastdx_app/services/services.dart';
-// import 'package:fastdx_app/providers/providers.dart';
+import 'package:fastdx_app/providers/providers.dart';
 
 class VendorOrder extends ConsumerStatefulWidget {
   final AppOrder order;
-  final void Function(AppOrder? order)? onAcceptOrder;
-  final void Function(AppOrder? order)? onCancelOrder;
 
-  const VendorOrder({
-    super.key,
-    required this.order,
-    this.onAcceptOrder,
-    this.onCancelOrder,
-  });
+  const VendorOrder({super.key, required this.order});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() {
@@ -34,15 +27,19 @@ class _VendorOrderState extends ConsumerState<VendorOrder> {
       isPending = true;
     });
     final updatedOrder = await OrderApi.update(id, {"status": "accepted"});
+    setState(() {
+      isPending = false;
+    });
     if (updatedOrder == null) {
       if (mounted) {
         Notify.showError(context: context, message: "Failed to accept order");
       }
+      return;
     }
-    setState(() {
-      isPending = false;
-    });
-    widget.onAcceptOrder?.call(updatedOrder);
+
+    ref.invalidate(ordersProvider);
+    ref.invalidate(orderAggregatesProvider);
+    ref.invalidate(orderProvider(GetOrderParams(orderId: widget.order.id)));
   }
 
   Future<void> _cancelOrder(String id) async {
@@ -54,11 +51,14 @@ class _VendorOrderState extends ConsumerState<VendorOrder> {
       if (mounted) {
         Notify.showError(context: context, message: "Failed to cancel order");
       }
+      return;
     }
     setState(() {
       isPending = false;
     });
-    widget.onCancelOrder?.call(updatedOrder);
+    ref.invalidate(ordersProvider);
+    ref.invalidate(orderAggregatesProvider);
+    ref.invalidate(orderProvider(GetOrderParams(orderId: widget.order.id)));
   }
 
   @override

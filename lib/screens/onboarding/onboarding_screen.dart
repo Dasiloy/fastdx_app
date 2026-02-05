@@ -21,10 +21,9 @@ class _State extends _Controller {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
+      body: SizedBox(
         width: double.infinity,
         height: double.infinity,
-        padding: EdgeInsets.only(bottom: 40, left: 24, right: 24),
         child: Column(
           children: [
             Expanded(
@@ -37,24 +36,24 @@ class _State extends _Controller {
                     data: Onbaord(
                       title: "All your favorites",
                       description:
-                          "Get all your loved foods in one once place,you just place the orer we do the rest",
+                          "Discover a wide variety of delicious meals from top local restaurants, all in one place.",
                       imageUrl: "assets/images/onboarding_1.png",
                     ),
                   ),
                   Onboarding(
                     data: Onbaord(
-                      title: 'Order from choosen chef',
+                      title: 'Expert Chefs',
                       description:
-                          "Get all your loved foods in one once place,you just place the orer we do the rest",
-                      imageUrl: "assets/images/onboarding_1.png",
+                          "Order from the best. Our meals are crafted by renowned chefs to ensure every bite is perfect.",
+                      imageUrl: "assets/images/onboarding_2.png",
                     ),
                   ),
                   Onboarding(
                     data: Onbaord(
-                      title: "Free delivery offers",
+                      title: "Fast & Free Delivery",
                       description:
-                          "Get all your loved foods in one once place,you just place the orer we do the rest",
-                      imageUrl: "assets/images/onboarding_1.png",
+                          "Enjoy lightning-fast delivery to your doorstep. Hot, fresh, and hassle-free.",
+                      imageUrl: "assets/images/onboarding_3.png",
                     ),
                   ),
                 ],
@@ -73,12 +72,23 @@ class _State extends _Controller {
               ),
             ),
             const SizedBox(height: 69),
-            PrimaryButton(label: _nextLabel, onPressed: _onNextClicked),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: PrimaryButton(
+                label: _nextLabel,
+                onPressed: _onNextClicked,
+              ),
+            ),
             const SizedBox(height: 16),
             if (!_isLast)
-              TertiaryButton(label: "Skip", onPressed: _onSkipClicked)
+              Padding(
+                padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).size.height * 0.05,
+                ),
+                child: TertiaryButton(label: "Skip", onPressed: _onSkipClicked),
+              )
             else
-              SizedBox(height: 50),
+              SizedBox(height: 50 + MediaQuery.of(context).size.height * 0.05),
           ],
         ),
       ),

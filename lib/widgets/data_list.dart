@@ -13,6 +13,7 @@ class DataList<T> extends StatelessWidget {
   final String emptyLabel;
   final TapBehavior tapBehavior;
   final Widget Function(BuildContext context, int index, T item) itemBuilder;
+  final Future<void> Function()? onRefresh;
 
   final Widget? header;
   final EdgeInsets? padding;
@@ -48,6 +49,7 @@ class DataList<T> extends StatelessWidget {
     this.shimmerBaseColor,
     this.shimmerContainerColor,
     this.shimmerHighlightColor,
+    this.onRefresh,
   });
 
   int get itemCount {
@@ -147,63 +149,82 @@ class DataList<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Widget content;
+
     if (isLoading) {
-      return _buildLoadingView(context);
-    }
-
-    if (data.isEmpty) {
-      return _buildEmptyView(context);
-    }
-
-    if (separator != null) {
-      return ListView.separated(
-        padding: padding,
-        controller: controller,
-        scrollDirection: Axis.vertical,
-        itemCount: itemCount,
-        separatorBuilder: (_, __) => separator!,
-        itemBuilder: (ctx, index) {
-          if (header != null) {
-            if (index == 0) {
-              return header;
+      content = _buildLoadingView(context);
+    } else if (data.isEmpty) {
+      content = _buildEmptyView(context);
+      if (onRefresh != null) {
+        content = CustomScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          slivers: [SliverFillRemaining(hasScrollBody: false, child: content)],
+        );
+      }
+    } else {
+      if (separator != null) {
+        content = ListView.separated(
+          padding: padding,
+          controller: controller,
+          physics: const AlwaysScrollableScrollPhysics(),
+          scrollDirection: Axis.vertical,
+          itemCount: itemCount,
+          separatorBuilder: (_, __) => separator!,
+          itemBuilder: (ctx, index) {
+            if (header != null) {
+              if (index == 0) {
+                return header!;
+              }
+              return _buildTappableItem(
+                ctx,
+                data[index - 1],
+                itemBuilder(ctx, index - 1, data[index - 1]),
+              );
             }
             return _buildTappableItem(
               ctx,
-              data[index - 1],
-              itemBuilder(ctx, index - 1, data[index - 1]),
+              data[index],
+              itemBuilder(ctx, index, data[index]),
             );
-          }
-          return _buildTappableItem(
-            ctx,
-            data[index],
-            itemBuilder(ctx, index, data[index]),
-          );
-        },
+          },
+        );
+      } else {
+        content = ListView.builder(
+          padding: padding,
+          controller: controller,
+          physics: const AlwaysScrollableScrollPhysics(),
+          scrollDirection: Axis.vertical,
+          itemCount: itemCount,
+          itemBuilder: (ctx, index) {
+            if (header != null) {
+              if (index == 0) {
+                return header!;
+              }
+              return _buildTappableItem(
+                ctx,
+                data[index - 1],
+                itemBuilder(ctx, index - 1, data[index - 1]),
+              );
+            }
+            return _buildTappableItem(
+              ctx,
+              data[index],
+              itemBuilder(ctx, index, data[index]),
+            );
+          },
+        );
+      }
+    }
+
+    if (onRefresh != null) {
+      return RefreshIndicator.adaptive(
+        color: Theme.of(context).colorScheme.primary,
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        onRefresh: onRefresh!,
+        child: content,
       );
     }
 
-    return ListView.builder(
-      padding: padding,
-      controller: controller,
-      scrollDirection: Axis.vertical,
-      itemCount: itemCount,
-      itemBuilder: (ctx, index) {
-        if (header != null) {
-          if (index == 0) {
-            return header;
-          }
-          return _buildTappableItem(
-            ctx,
-            data[index - 1],
-            itemBuilder(ctx, index - 1, data[index - 1]),
-          );
-        }
-        return _buildTappableItem(
-          ctx,
-          data[index],
-          itemBuilder(ctx, index, data[index]),
-        );
-      },
-    );
+    return content;
   }
 }

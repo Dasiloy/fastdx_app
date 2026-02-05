@@ -30,4 +30,8 @@ class AppColors {
   static const success = Color(0xFF00C853);
   static const warning = Color(0xFFFFC107);
   static const error = Color(0xFFD32F2F);
+
+  // Card color
+  static const cardBg = Color(0xFFF6F6F6);
+  static const cardBgDark = Color(0xFF1E1E1E);
 }

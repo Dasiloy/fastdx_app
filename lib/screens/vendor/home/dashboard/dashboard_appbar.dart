@@ -1,10 +1,10 @@
-import "package:fastdx_app/services/firebase/api.dart";
 import "package:flutter/material.dart";
-
 import "package:fastdx_app/helpers/helpers.dart";
 import "package:fastdx_app/widgets/widgets.dart";
 import "package:flutter_riverpod/flutter_riverpod.dart";
 import "package:fastdx_app/providers/providers.dart";
+
+import "package:fastdx_app/screens/vendor/vendor.dart";
 
 class DashboardAppbar extends ConsumerWidget {
   final void Function() onTapNotification;
@@ -26,10 +26,10 @@ class DashboardAppbar extends ConsumerWidget {
               children: [
                 Avatar(
                   size: 45,
-                  onPress: () async {
-                    kFireAuth.signOut();
-                    ref.read(appProvider.notifier).clear();
-                    // we will use this to direct to the profiles page
+                  onPress: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => VendorProfileScreen()),
+                    );
                   },
                 ),
                 const SizedBox(width: 16),

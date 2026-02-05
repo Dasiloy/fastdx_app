@@ -28,3 +28,6 @@ export 'package:fastdx_app/widgets/vendor_order_tab.dart';
 export "package:fastdx_app/widgets/vendor_review.dart";
 export "package:fastdx_app/widgets/upload_input.dart";
 export "package:fastdx_app/widgets/meal_category_picker.dart";
+export "package:fastdx_app/widgets/running_orders.dart";
+export "package:fastdx_app/widgets/order_stats.dart";
+export "package:fastdx_app/widgets/profile/profile.dart";

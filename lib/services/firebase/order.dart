@@ -1,14 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:fastdx_app/models/models.dart';
-import 'package:fastdx_app/services/firebase/meal.dart';
-import 'package:fastdx_app/services/firebase/api.dart';
-import 'package:fastdx_app/services/firebase/profile.dart';
-import 'package:fastdx_app/services/firebase/resturant.dart';
-import 'package:fastdx_app/services/firebase/rider.dart';
+import 'package:fastdx_app/core/core.dart';
+import 'package:fastdx_app/services/services.dart';
 
 class OrderApi {
   static final api = kFireStore.collection("orders");
@@ -50,26 +48,26 @@ class OrderApi {
     }
   }
 
-  static Future<List<AppOrder>> list({
-    String? customerId,
-    String? resturantId,
-    String? status,
-    bool fetchCustomer = false,
-    bool fetchResturant = false,
-  }) async {
+  static Future<List<AppOrder>> list(ListOrdersParams params) async {
     try {
       Query<Map<String, dynamic>> query = api;
 
+      final customerId = params.customerId;
+      final resturantId = params.resturantId;
+      final status = params.status;
+      final fetchCustomer = params.fetchCustomer;
+      final fetchResturant = params.fetchResturant;
+
       if (customerId != null) {
-        query.where("customerId", isEqualTo: customerId);
+        query = query.where("customerId", isEqualTo: customerId);
       }
 
       if (resturantId != null) {
-        query.where("resturantId", isEqualTo: resturantId);
+        query = query.where("resturantId", isEqualTo: resturantId);
       }
 
       if (status != null) {
-        query.where("status", isEqualTo: status);
+        query = query.where("status", isEqualTo: status);
       }
 
       final snaps = await query.get(GetOptions(source: Source.serverAndCache));
@@ -111,21 +109,9 @@ class OrderApi {
     }
   }
 
-  static Future<AppOrder?> get({
-    required String orderId,
-    bool fetchCustomer = false,
-    bool fetchResturant = false,
-    bool fetchRider = false,
-    bool fetchTransaction = false,
-  }) async {
+  static Future<AppOrder?> get(GetOrderParams params) async {
     try {
-      final data = await getDoc(
-        orderId,
-        fetchCustomer: fetchCustomer,
-        fetchResturant: fetchResturant,
-        fetchRider: fetchRider,
-        fetchTransaction: fetchTransaction,
-      );
+      final data = await getDoc(params);
       if (data == null) return null;
       return AppOrder.fromJson(data);
     } catch (e) {
@@ -134,15 +120,16 @@ class OrderApi {
     }
   }
 
-  static Future<Map<String, dynamic>?> getDoc(
-    String orderId, {
-    bool fetchCustomer = false,
-    bool fetchResturant = false,
-    bool fetchRider = false,
-    bool fetchTransaction = false,
-  }) async {
+  static Future<Map<String, dynamic>?> getDoc(GetOrderParams params) async {
     try {
-      final snap = await api.doc(orderId).get();
+      final orderId = params.orderId;
+      final fetchCustomer = params.fetchCustomer;
+      final fetchResturant = params.fetchResturant;
+      final fetchRider = params.fetchRider;
+
+      final snap = await api
+          .doc(orderId)
+          .get(GetOptions(source: Source.serverAndCache));
       if (!snap.exists) return null;
       Map<String, dynamic> doc = {
         "id": snap.id,
@@ -192,10 +179,94 @@ class OrderApi {
   ) async {
     try {
       await api.doc(id).update(payload);
-      return get(orderId: id);
+      return get(GetOrderParams(orderId: id));
     } catch (e) {
       print(e);
       return null;
+    }
+  }
+
+  static Future<OrderAggregates> getOrderAggregates(
+    GetOrderAggregatesParams params,
+  ) async {
+    try {
+      Query<Map<String, dynamic>> query = api;
+
+      if (params.customerId != null) {
+        query = query.where("customerId", isEqualTo: params.customerId);
+      }
+
+      if (params.resturantId != null) {
+        query = query.where("resturantId", isEqualTo: params.resturantId);
+      }
+
+      AggregateQuerySnapshot? totalSnap;
+      AggregateQuerySnapshot? runningSnap;
+      AggregateQuerySnapshot? pendingSnap;
+      AggregateQuerySnapshot? completedSnap;
+      AggregateQuerySnapshot? cancelledSnap;
+
+      final futures = <Future>[];
+
+      // Always fetch total
+      futures.add(
+        query
+            .aggregate(count())
+            .get(source: AggregateSource.server)
+            .then((value) => totalSnap = value),
+      );
+
+      // "Running" = Accepted
+      addStatusQuery(
+        params.statuses,
+        OrderStatusEnum.accepted,
+        (v) => runningSnap = v,
+        query,
+        futures,
+      );
+      // "Pending" = Pending
+      addStatusQuery(
+        params.statuses,
+        OrderStatusEnum.pending,
+        (v) => pendingSnap = v,
+        query,
+        futures,
+      );
+      // "Completed" = Completed
+      addStatusQuery(
+        params.statuses,
+        OrderStatusEnum.completed,
+        (v) => completedSnap = v,
+        query,
+        futures,
+      );
+      // "Cancelled" = Cancelled
+      addStatusQuery(
+        params.statuses,
+        OrderStatusEnum.cancelled,
+        (v) => cancelledSnap = v,
+        query,
+        futures,
+      );
+
+      await Future.wait(futures);
+
+      return OrderAggregates(
+        totalOrdersCount: totalSnap?.count ?? 0,
+        runningOrdersCount: runningSnap?.count ?? 0,
+        pendingOrdersCount: pendingSnap?.count ?? 0,
+        completedOrdersCount: completedSnap?.count ?? 0,
+        cancelledOrdersCount: cancelledSnap?.count ?? 0,
+      );
+    } catch (e) {
+      print(e);
+      return OrderAggregates(
+        runningOrdersCount: 0,
+        pendingOrdersCount: 0,
+        completedOrdersCount: 0,
+        cancelledOrdersCount: 0,
+        totalOrdersCount: 0,
+      );
     }
   }
 
@@ -237,5 +308,126 @@ class OrderApi {
       print(e);
       return [];
     }
+  }
+
+  // Helper to add status query
+  static void addStatusQuery(
+    List<String> statuses,
+    OrderStatusEnum status,
+    void Function(AggregateQuerySnapshot) onResult,
+    Query<Map<String, dynamic>> query,
+    List<Future> futures,
+  ) {
+    if (statuses.contains(status.name)) {
+      futures.add(
+        query
+            .where("status", isEqualTo: status.name)
+            .aggregate(count())
+            .get(source: AggregateSource.server)
+            .then((value) => onResult(value))
+            .catchError((e) => print(e)),
+      );
+    }
+  }
+}
+
+class ListOrdersParams {
+  final String? customerId;
+  final String? resturantId;
+  final String? status;
+  final bool fetchCustomer;
+  final bool fetchResturant;
+
+  ListOrdersParams({
+    this.customerId,
+    this.resturantId,
+    this.status,
+    this.fetchCustomer = false,
+    this.fetchResturant = false,
+  });
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is ListOrdersParams &&
+        other.customerId == customerId &&
+        other.resturantId == resturantId &&
+        other.status == status &&
+        other.fetchCustomer == fetchCustomer &&
+        other.fetchResturant == fetchResturant;
+  }
+
+  @override
+  int get hashCode {
+    return customerId.hashCode ^
+        resturantId.hashCode ^
+        status.hashCode ^
+        fetchCustomer.hashCode ^
+        fetchResturant.hashCode;
+  }
+}
+
+class GetOrderParams {
+  final String orderId;
+  final bool fetchCustomer;
+  final bool fetchResturant;
+  final bool fetchRider;
+  final bool fetchTransaction;
+
+  GetOrderParams({
+    required this.orderId,
+    this.fetchCustomer = false,
+    this.fetchResturant = false,
+    this.fetchRider = false,
+    this.fetchTransaction = false,
+  });
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is GetOrderParams &&
+        other.orderId == orderId &&
+        other.fetchCustomer == fetchCustomer &&
+        other.fetchResturant == fetchResturant &&
+        other.fetchRider == fetchRider &&
+        other.fetchTransaction == fetchTransaction;
+  }
+
+  @override
+  int get hashCode {
+    return orderId.hashCode ^
+        fetchCustomer.hashCode ^
+        fetchResturant.hashCode ^
+        fetchRider.hashCode ^
+        fetchTransaction.hashCode;
+  }
+}
+
+class GetOrderAggregatesParams {
+  final String? resturantId;
+  final String? customerId;
+  final List<String> statuses;
+
+  GetOrderAggregatesParams({
+    this.resturantId,
+    this.customerId,
+    List<String>? statuses,
+  }) : statuses = statuses ?? [];
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is GetOrderAggregatesParams &&
+        other.resturantId == resturantId &&
+        other.customerId == customerId &&
+        listEquals(other.statuses, statuses);
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(resturantId, customerId, Object.hashAll(statuses));
   }
 }

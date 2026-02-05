@@ -38,17 +38,37 @@ class _State extends ConsumerState<VendorMealTab>
       ),
     );
 
-    return mealsAsync.when(
-      data: (meals) => _buildMealList(meals),
-      error: (_, __) => _buildMealList([]),
-      loading: () => _buildMealList([], isLoading: true),
-    );
+    final meals = mealsAsync.asData?.value ?? [];
+    final isLoading = mealsAsync.isLoading && !mealsAsync.hasValue;
+
+    return _buildMealList(meals, isLoading: isLoading);
   }
 
   Widget _buildMealList(List<AppMeal> meals, {bool isLoading = false}) {
     return DataList(
       data: meals,
       isLoading: isLoading,
+      onRefresh: () async {
+        ref.invalidate(
+          mealsProvider(
+            ListMealsParams(
+              plain: true,
+              category: widget.category.name,
+              resturantId: ref.read(appProvider).resturant!.id,
+            ),
+          ),
+        );
+
+        await ref.read(
+          mealsProvider(
+            ListMealsParams(
+              plain: true,
+              category: widget.category.name,
+              resturantId: ref.read(appProvider).resturant!.id,
+            ),
+          ).future,
+        );
+      },
       emptyIcon: Icon(
         Icons.set_meal_sharp,
         size: 80,
