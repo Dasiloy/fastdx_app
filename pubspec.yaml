@@ -97,6 +97,11 @@ flutter:
     ## ICONS
     - assets/icons/user.svg
     - assets/icons/address.svg
+    - assets/icons/faq.svg
+    - assets/icons/logout.svg
+    - assets/icons/reviews.svg
+    - assets/icons/settings.svg
+    - assets/icons/withdrawal.svg
     ## JSON DATA
     - assets/json/meal.json
     - assets/json/rider.json

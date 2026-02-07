@@ -33,10 +33,7 @@ abstract class _Controller extends ConsumerState<LoginScreen> {
     });
 
     try {
-      final userCredentials = await kFireAuth.signInWithEmailAndPassword(
-        email: data.email!,
-        password: data.password!,
-      );
+      final userCredentials = await AuthApi.login(data);
 
       profile = await ProfileApi.get(userCredentials.user!.uid);
       WidgetsBinding.instance.addPostFrameCallback((_) async {

@@ -4,3 +4,4 @@ export 'package:fastdx_app/screens/vendor/edit_meal/edit_meal_screen.dart';
 export 'package:fastdx_app/screens/vendor/new_meal/new_meal_screen.dart';
 export "package:fastdx_app/screens/vendor/reviews/reviews_screen.dart";
 export "package:fastdx_app/screens/vendor/profile/profile_screen.dart";
+export "package:fastdx_app/screens/vendor/profile/edit_profile/edit_profile_screen.dart";

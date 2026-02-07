@@ -2,15 +2,33 @@ import 'dart:io';
 
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
-import "package:flutter_svg/flutter_svg.dart";
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:fastdx_app/theme/theme.dart';
 import "package:fastdx_app/widgets/widgets.dart";
 import 'package:fastdx_app/helpers/helpers.dart';
+import 'package:fastdx_app/screens/screens.dart';
+import 'package:fastdx_app/providers/providers.dart';
+import 'package:fastdx_app/services/firebase/firebasde.dart';
 
 class VendorProfileScreen extends ConsumerWidget {
   const VendorProfileScreen({super.key});
+
+  void _logOut(BuildContext ctx, WidgetRef ref) async {
+    try {
+      await AuthApi.logout();
+      if (ctx.mounted) {
+        Navigator.of(ctx).pop();
+      }
+      ref.read(appProvider.notifier).clear();
+    } catch (error) {
+      if (!ctx.mounted) return;
+      Notify.showError(
+        context: ctx,
+        message: "An error occured!. Please try again later",
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     bool isAndroid = Platform.isAndroid;
@@ -24,7 +42,7 @@ class VendorProfileScreen extends ConsumerWidget {
           slivers: [
             // AppBar
             SliverAppBar(
-              pinned: false,
+              pinned: true,
               expandedHeight: 280,
               centerTitle: !isAndroid,
               title: Text("My Profile"),
@@ -123,6 +141,7 @@ class VendorProfileScreen extends ConsumerWidget {
                     horizontal: 20,
                   ),
                   child: Column(
+                    spacing: 20,
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -132,104 +151,73 @@ class VendorProfileScreen extends ConsumerWidget {
                           spacing: 16,
                           children: [
                             // ITEM
-                            GestureDetector(
+                            ProfileItem(
+                              iconUrl: "assets/icons/user.svg",
+                              label: "Personal Info",
                               onTap: () {
-                                print("Tapped");
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) => EditProfileScreen(),
+                                  ),
+                                );
                               },
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  // HEAD
-                                  Expanded(
-                                    child: Row(
-                                      spacing: 13,
-                                      children: [
-                                        Container(
-                                          width: 48,
-                                          height: 48,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: Utils.isLightMode(context)
-                                                ? Colors.white
-                                                : AppColors.containerDark,
-                                          ),
-                                          child: Center(
-                                            child: SvgPicture.asset(
-                                              "assets/icons/user.svg",
-                                              width: 24,
-                                              height: 24,
-                                            ),
-                                          ),
-                                        ),
-                                        Text(
-                                          "Personal Info",
-                                          style: Theme.of(
-                                            context,
-                                          ).textTheme.bodyMedium,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-
-                                  Icon(
-                                    Icons.chevron_right,
-                                    size: 24,
-                                    color: Theme.of(
-                                      context,
-                                    ).iconTheme.color?.withValues(alpha: 0.5),
-                                  ),
-                                ],
-                              ),
                             ),
-                            //ITEM
-                            GestureDetector(
-                              onTap: () {
-                                print("Tapped");
-                              },
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  // HEAD
-                                  Expanded(
-                                    child: Row(
-                                      spacing: 13,
-                                      children: [
-                                        Container(
-                                          width: 48,
-                                          height: 48,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: Utils.isLightMode(context)
-                                                ? Colors.white
-                                                : AppColors.containerDark,
-                                          ),
-                                          child: Center(
-                                            child: SvgPicture.asset(
-                                              "assets/icons/address.svg",
-                                              width: 18,
-                                              height: 18,
-                                            ),
-                                          ),
-                                        ),
-                                        Text(
-                                          "Addresses",
-                                          style: Theme.of(
-                                            context,
-                                          ).textTheme.bodyMedium,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                            // ITEM
+                          ],
+                        ),
+                      ),
 
-                                  Icon(
-                                    Icons.chevron_right,
-                                    size: 24,
-                                    color: Theme.of(
-                                      context,
-                                    ).iconTheme.color?.withValues(alpha: 0.5),
+                      // PROFILE SECTION
+                      ProfileCard(
+                        child: Column(
+                          spacing: 16,
+                          children: [
+                            // ITEM
+                            ProfileItem(
+                              iconUrl: "assets/icons/withdrawal.svg",
+                              label: "Withdrawal Histrory",
+                              onTap: () {},
+                            ),
+                            // ITEM
+                            ProfileItem(
+                              iconUrl: "assets/icons/reviews.svg",
+                              label: "User Reviews",
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (_) => VendorReviewsScreen(),
                                   ),
-                                ],
-                              ),
+                                );
+                              },
+                            ),
+                            ProfileItem(
+                              iconUrl: "assets/icons/faq.svg",
+                              label: "FAQ",
+                              onTap: () {},
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      // PROFILE SECTION
+                      ProfileCard(
+                        child: Column(
+                          spacing: 16,
+                          children: [
+                            // ITEM
+                            ProfileItem(
+                              iconUrl: "assets/icons/settings.svg",
+                              label: "Settings",
+                              onTap: () {},
+                            ),
+                            // ITEM
+                            ProfileItem(
+                              icon: const SizedBox.shrink(),
+                              iconUrl: "assets/icons/logout.svg",
+                              label: "Log Out",
+                              onTap: () {
+                                _logOut(context, ref);
+                              },
                             ),
                           ],
                         ),

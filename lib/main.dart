@@ -16,7 +16,6 @@ import 'package:fastdx_app/screens/auth/login/login_screen.dart';
 /// BUILD NOTIFICATIONS SCREEN
 /// BUILD CHAT SCREEN
 /// BUILD PROFILE PAGES
-///
 Future<void> main() async {
   // ENsure Native Code and flutter binding
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();

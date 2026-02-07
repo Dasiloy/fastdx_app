@@ -53,6 +53,8 @@ abstract class _Controller extends ConsumerState<VendorHomeScreen> {
       case TabEnum.menu:
         return AppBar(
           centerTitle: true,
+          scrolledUnderElevation: 0,
+          surfaceTintColor: Colors.transparent,
           backgroundColor: Utils.isLightMode(context)
               ? Theme.of(context).colorScheme.surfaceContainerLowest
               : Theme.of(context).scaffoldBackgroundColor,
@@ -62,6 +64,8 @@ abstract class _Controller extends ConsumerState<VendorHomeScreen> {
       case TabEnum.orders:
         return AppBar(
           centerTitle: true,
+          scrolledUnderElevation: 0,
+          surfaceTintColor: Colors.transparent,
           backgroundColor: Utils.isLightMode(context)
               ? Theme.of(context).colorScheme.surfaceContainerLowest
               : Theme.of(context).scaffoldBackgroundColor,

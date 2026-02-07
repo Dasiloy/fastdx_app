@@ -72,11 +72,7 @@ abstract class _Controller extends ConsumerState<RegisterScreen> {
     });
 
     try {
-      UserCredential credentials = await kFireAuth
-          .createUserWithEmailAndPassword(
-            email: data.email!,
-            password: data.password!,
-          );
+      final credentials = await AuthApi.register(data);
 
       profile = await ProfileApi.post(
         CreateProfileDto(

@@ -31,3 +31,4 @@ export "package:fastdx_app/widgets/meal_category_picker.dart";
 export "package:fastdx_app/widgets/running_orders.dart";
 export "package:fastdx_app/widgets/order_stats.dart";
 export "package:fastdx_app/widgets/profile/profile.dart";
+export "package:fastdx_app/widgets/avatar_uploader.dart";
